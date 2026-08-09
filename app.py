@@ -69,7 +69,7 @@ try:
 
     # GLOBAL LAYOUT CENTERING
     # master column container setup for absolute horizontal centering
-    _, master_col, _ = st.columns([1, 8, 1])
+    _, master_col, _ = st.columns([0.5, 9, 0.5])
 
     with master_col:
         # REPORT SECTION
@@ -82,7 +82,7 @@ try:
 
         # CONTROL PANEL CONFIGURATION
         # balanced symmetrical layout columns for options
-        col_cp, col_space, col_sg = st.columns([4, 0.5, 4])
+        col_cp, col_space, col_sg = st.columns([4.5, 0.5, 4.5])
         
         # ENGINE SELECTION WIDGET
         # model selection radio buttons
@@ -109,7 +109,7 @@ try:
 
         # IMAGE UPLOAD SECTION
         # perfectly centered layout columns for file input
-        col_empty_u1, col_up, col_empty_u2 = st.columns([2, 4, 2])
+        col_empty_u1, col_up, col_empty_u2 = st.columns([2.5, 4, 2.5])
         
         # FILE ACQUISITION WIDGET
         # sample image upload interface
@@ -123,7 +123,7 @@ try:
             img_bgr = cv2.imdecode(file_bytes, 1)
             img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
             
-            col_img_e1, col_img_mid, col_img_e2 = st.columns([3, 2, 3])
+            col_img_e1, col_img_mid, col_img_e2 = st.columns([3, 3, 3])
             with col_img_mid:
                 st.image(img_rgb, caption="Uploaded Sample", width=250)
 
@@ -147,8 +147,6 @@ try:
                     st.metric("SSIM Validation Score", f"{ssim_gate_score:.4f}")
                 
                 else:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    
                     # MODEL EXECUTION BRANCH
                     # classical machine learning inference
                     if selected_model == "Classical ML (SVM + PCA)":
@@ -180,7 +178,7 @@ try:
                         ax.set_title("Reconstruction Error Heatmap")
                         ax.axis('off')
                         
-                        col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([3, 2, 3])
+                        col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([3, 3, 3])
                         with col_hm_mid:
                             st.pyplot(fig)
 
