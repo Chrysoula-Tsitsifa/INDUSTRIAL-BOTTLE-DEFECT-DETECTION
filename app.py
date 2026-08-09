@@ -69,7 +69,7 @@ try:
 
     # GLOBAL LAYOUT CENTERING
     # master column container setup for absolute horizontal centering
-    _, master_col, _ = st.columns([1, 6, 1])
+    _, master_col, _ = st.columns([1, 8, 1])
 
     with master_col:
         # REPORT SECTION
@@ -109,7 +109,7 @@ try:
 
         # IMAGE UPLOAD SECTION
         # perfectly centered layout columns for file input
-        col_empty_u1, col_up, col_empty_u2 = st.columns([1, 4, 1])
+        col_empty_u1, col_up, col_empty_u2 = st.columns([2, 4, 2])
         
         # FILE ACQUISITION WIDGET
         # sample image upload interface
@@ -123,7 +123,7 @@ try:
             img_bgr = cv2.imdecode(file_bytes, 1)
             img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
             
-            col_img_e1, col_img_mid, col_img_e2 = st.columns([2, 3, 2])
+            col_img_e1, col_img_mid, col_img_e2 = st.columns([2, 4, 2])
             with col_img_mid:
                 st.image(img_rgb, caption="Uploaded Sample", width=250)
 
@@ -166,7 +166,10 @@ try:
                         img_input = np.expand_dims(img_resized, axis=0) / 255.0
                         recon = ae_baseline.predict(img_input)[0]
                         mse = np.mean(np.square(img_resized / 255.0 - recon))
+                        
+                        st.markdown("<br>", unsafe_allow_html=True)
                         st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
+                        st.markdown("<br>", unsafe_allow_html=True)
                         
                         # COMPACT HEATMAP RENDERING
                         # scaled figure size configuration for smaller footprint
@@ -184,10 +187,11 @@ try:
                     # structural similarity reference comparison
                     elif selected_model == "SSIM Analysis (Golden Ref)":
                         score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
+                        st.markdown("<br>", unsafe_allow_html=True)
                         if score >= 0.50:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
                         else:
-                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
+                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
                         st.metric("SSIM Score", f"{score:.4f}")
                     
                     # MODEL EXECUTION BRANCH
@@ -196,10 +200,11 @@ try:
                         img_resized = cv2.resize(img_rgb, (224, 224))
                         img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
                         pred = mobilenet.predict(img_tensor)[0][0]
+                        st.markdown("<br>", unsafe_allow_html=True)
                         if pred > 0.5:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
-                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
                         st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
 
 # EXCEPTION MANAGEMENT
