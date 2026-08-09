@@ -132,15 +132,15 @@ try:
         uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
 
     # VISUALIZATION PREVIEW
-    # balanced preview rendering container for proper scaling
+    # perfectly aligned preview container matching input columns exactly
     if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_bgr = cv2.imdecode(file_bytes, 1)
         img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
         
-        col_img_e1, col_img_mid, col_img_e2 = st.columns([3, 2, 3])
+        col_img_e1, col_img_mid, col_img_e2 = st.columns([2.5, 4, 2.5])
         with col_img_mid:
-            st.image(img_rgb, caption="Uploaded Sample", width=250)
+            st.image(img_rgb, caption="Uploaded Sample", use_container_width=True)
 
     st.markdown("---")
 
@@ -189,7 +189,7 @@ try:
                     
                     # BALANCED HEATMAP RENDERING
                     # moderate figure size configuration for ideal display dimensions
-                    fig, ax = plt.subplots(figsize=(4.5, 3.5))
+                    fig, ax = plt.subplots(figsize=(5, 4))
                     cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
                     fig.colorbar(cax)
                     ax.set_title("Reconstruction Error Heatmap")
@@ -218,7 +218,7 @@ try:
                     if pred > 0.5:
                         st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
                     st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
 
 # EXCEPTION MANAGEMENT
