@@ -14,17 +14,19 @@ def handle_external_error(e):
     st.stop()
 
 try:
-    
     # ARTIFACT LOADING
     @st.cache_resource
     def load_artifacts():
-        pca = joblib.load('pca_model.joblib')
-        svm = joblib.load('svm_model.joblib')
-        ae_baseline = load_model('baseline_ae.keras')
-        ae_optimized = load_model('optimized_ae.keras')
-        ae_thresh = joblib.load('optimized_ae_threshold.joblib')
-        golden_ref = np.load('golden_reference.npy')
-        mobilenet = load_model('mobilenet_v2_final.keras')
+        # Χρήση custom_object_scope για την παράκαμψη του σφάλματος quantization_config
+        with tf.keras.utils.custom_object_scope({'quantization_config': None}):
+            pca = joblib.load('pca_model.joblib')
+            svm = joblib.load('svm_model.joblib')
+            ae_baseline = load_model('baseline_ae.keras')
+            ae_optimized = load_model('optimized_ae.keras')
+            ae_thresh = joblib.load('optimized_ae_threshold.joblib')
+            golden_ref = np.load('golden_reference.npy')
+            mobilenet = load_model('mobilenet_v2_final.keras')
+            
         with open('labels.txt', 'r') as f:
             labels = [line.strip() for line in f.readlines()]
         return pca, svm, ae_baseline, ae_optimized, ae_thresh, golden_ref, mobilenet, labels
@@ -76,9 +78,7 @@ try:
         )
         
         st.markdown("---")
-        # SAFETY GATEKEEPER SWITCH FOR DEMO
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
-        
         uploaded_file = st.file_uploader("Upload inspection sample (JPG, PNG)", type=["jpg", "png", "jpeg"])
 
     with col2:
@@ -92,114 +92,67 @@ try:
             st.image(img_rgb, caption="Uploaded Sample", width=300)
             
             if st.button("ΕΚΤΕΛΕΣΗ ΕΛΕΓΧΟΥ 🚀", use_container_width=True):
-                
-                # GLOBAL GATEKEEPER CHECK (If enabled)
                 img_gray_resized = cv2.resize(img_gray, (128, 128))
                 ssim_gate_score, _ = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
                 
                 if use_gatekeeper and ssim_gate_score < 0.40:
-                    st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ INVALID IMAGE: Αδυναμία αναγνώρισης δομής. Το αντικείμενο δεν είναι πάτος μπουκαλιού.</div>', unsafe_allow_html=True)
+                    st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ INVALID IMAGE: Αδυναμία αναγνώρισης δομής.</div>', unsafe_allow_html=True)
                     st.metric("SSIM Validation Score", f"{ssim_gate_score:.4f}")
-                    st.warning("Prediction blocked by Safety Gatekeeper. Structural similarity is below the 0.40 minimum threshold.")
                 
                 else:
-                    # CLASSICAL ML PIPELINE
                     if selected_model == "Classical ML (SVM + PCA)":
                         img_resized = cv2.resize(img_rgb, (128, 128))
                         img_flat = img_resized.reshape(1, -1)
                         img_pca = pca.transform(img_flat)
                         pred = svm.predict(img_pca)
-                        
                         if pred[0] == 1:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
                             st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
                     
-                    # BASELINE AUTOENCODER PIPELINE
                     elif selected_model == "Baseline Autoencoder":
                         img_resized = cv2.resize(img_rgb, (128, 128))
                         img_input = np.expand_dims(img_resized, axis=0) / 255.0
                         recon = ae_baseline.predict(img_input)[0]
-                        
-                        error_map = np.mean(np.abs(img_resized / 255.0 - recon), axis=-1)
                         mse = np.mean(np.square(img_resized / 255.0 - recon))
-                        
                         st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
-                        
                         fig, ax = plt.subplots()
-                        cax = ax.imshow(error_map, cmap='jet')
+                        cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
                         fig.colorbar(cax)
                         ax.set_title("Reconstruction Error Heatmap")
                         ax.axis('off')
                         st.pyplot(fig)
 
-                    # OPTIMIZED AUTOENCODER PIPELINE
                     elif selected_model == "Optimized Autoencoder":
                         img_resized = cv2.resize(img_rgb, (128, 128))
                         img_input = np.expand_dims(img_resized, axis=0) / 255.0
                         recon = ae_optimized.predict(img_input)[0]
-                        
                         mse = np.mean(np.square(img_resized / 255.0 - recon))
-                        
                         if mse <= ae_thresh:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
                             st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
-                        
                         col_a, col_b = st.columns(2)
-                        col_a.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
-                        col_b.metric("Anomaly Threshold", f"{ae_thresh:.4f}")
+                        col_a.metric("MSE", f"{mse:.4f}")
+                        col_b.metric("Threshold", f"{ae_thresh:.4f}")
                         
-                        error_map = np.mean(np.abs(img_resized / 255.0 - recon), axis=-1)
-                        fig, ax = plt.subplots()
-                        ax.imshow(img_rgb)
-                        ax.imshow(error_map, cmap='jet', alpha=0.5)
-                        ax.set_title("Defect Localization")
-                        ax.axis('off')
-                        st.pyplot(fig)
-
-                    # SSIM ANALYSIS PIPELINE
                     elif selected_model == "SSIM Analysis (Golden Ref)":
                         score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
-                        
                         if score >= 0.50:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
                         else:
                             st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
-                        
-                        st.metric("Structural Similarity (SSIM) Score", f"{score:.4f}")
-                        
-                        fig, ax = plt.subplots()
-                        cax = ax.imshow(diff_map, cmap='jet', vmin=0, vmax=1)
-                        fig.colorbar(cax)
-                        ax.set_title("Structural Difference Map")
-                        ax.axis('off')
-                        st.pyplot(fig)
-
-                    # DEEP LEARNING PIPELINE (MOBILENET)
+                        st.metric("SSIM Score", f"{score:.4f}")
+                    
                     elif selected_model == "MobileNetV2 + Grad-CAM":
                         img_resized = cv2.resize(img_rgb, (224, 224))
                         img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
-                        
                         pred = mobilenet.predict(img_tensor)[0][0]
-                        confidence = pred * 100 if pred > 0.5 else (1 - pred) * 100
-                        
                         if pred > 0.5:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
                             st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
-                            
-                        st.metric("Σιγουριά Μοντέλου (Confidence)", f"{confidence:.2f}%")
-                        
-                        heatmap = make_gradcam_heatmap(img_tensor, mobilenet)
-                        heatmap_res = cv2.resize(heatmap, (img_rgb.shape[1], img_rgb.shape[0]))
-                        
-                        fig, ax = plt.subplots()
-                        ax.imshow(img_rgb)
-                        ax.imshow(heatmap_res, cmap='jet', alpha=0.5)
-                        ax.set_title("Grad-CAM Heatmap")
-                        ax.axis('off')
-                        st.pyplot(fig)
+                        st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
 
 except Exception as e:
     handle_external_error(e)

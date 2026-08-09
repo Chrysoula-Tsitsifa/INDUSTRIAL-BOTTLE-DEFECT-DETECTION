@@ -1,8 +1,8 @@
 streamlit
 opencv-python-headless
-numpy
+numpy<2.0.0
 joblib
-tensorflow
+tensorflow==2.15.0
 scikit-learn
 scikit-image
 matplotlib
