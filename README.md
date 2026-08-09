@@ -18,7 +18,9 @@ Test the production ready Streamlit application equipped with a global Out of Di
 ## 🧠 Core Architecture & R&D Evolution (The 4 Phase Pipeline)
 
 The system was developed through a rigorous 4 phase research and engineering pipeline, ensuring mathematical justification for every architectural decision.
+
 <br>
+
 ### Phase 1: Algorithmic Benchmarking & Baselines
 * **Classical ML Control Group:** Engineered an idempotent data ingestion pipeline and applied Principal Component Analysis (PCA) for dimensionality reduction, followed by a One Class SVM to establish a strict statistical baseline.
 * **Deep Learning Baseline:** Constructed a foundational Convolutional Autoencoder (CAE) for unsupervised anomaly detection.
