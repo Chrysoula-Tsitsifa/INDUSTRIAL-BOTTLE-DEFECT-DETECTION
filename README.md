@@ -5,7 +5,7 @@
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-green.svg)](https://opencv.org/)
 
-An enterprise grade, end to end Machine Learning pipeline engineered for automated visual inspection and structural anomaly detection in manufacturing lines. This project demonstrates a complete MLOps lifecycle: from classical algorithmic benchmarking and deep latent space optimization, to Explainable AI (XAI) diagnostics, edge IoT quantization, and system telemetry.
+An enterprise grade, end to end Machine Learning pipeline engineered for automated visual inspection and structural anomaly detection in manufacturing lines. This project demonstrates a complete MLOps lifecycle - From classical algorithmic benchmarking and deep latent space optimization, to Explainable AI (XAI) diagnostics, edge IoT quantization, and system telemetry.
 
    
 
