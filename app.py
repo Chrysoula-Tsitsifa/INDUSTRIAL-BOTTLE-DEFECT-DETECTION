@@ -72,7 +72,7 @@ try:
     st.markdown("<h3 style='text-align: center;'>Diagnostic Report</h3>", unsafe_allow_html=True)
     
     # SPACING CONFIGURATION
-    # vertical gap implementation (εισιτήριο ανόδου κατά δύο γραμμές)
+    # vertical gap implementation
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL CONFIGURATION
@@ -99,21 +99,20 @@ try:
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
 
     # SPACING CONFIGURATION
-    # vertical gap implementation (ανέβασμα του upload κατά τέσσερις γραμμές πιο κοντά)
+    # vertical gap implementation
     st.markdown("<br>", unsafe_allow_html=True)
 
     # IMAGE UPLOAD SECTION
-    # file input component placement
-    col_up, col_img, _ = st.columns([3, 3, 4])
+    # centered layout columns for file input and preview stacking
+    col_empty_u1, col_up, col_empty_u2 = st.columns([2, 4, 2])
     
     # FILE ACQUISITION WIDGET
     # sample image upload interface
     with col_up:
         uploaded_file = st.file_uploader("Upload inspection sample (JPG, PNG)", type=["jpg", "png", "jpeg"])
-
-    # VISUALIZATION PREVIEW
-    # uploaded sample rendering container
-    with col_img:
+        
+        # VISUALIZATION PREVIEW
+        # uploaded sample rendering container directly underneath
         if uploaded_file is not None:
             file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
             img_bgr = cv2.imdecode(file_bytes, 1)
