@@ -72,8 +72,8 @@ try:
     st.markdown("<h3 style='text-align: center;'>Diagnostic Report</h3>", unsafe_allow_html=True)
     
     # SPACING CONFIGURATION
-    # vertical gap implementation
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    # vertical gap implementation (εισιτήριο ανόδου κατά δύο γραμμές)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL CONFIGURATION
     # centered layout columns for diagnostic options
@@ -99,8 +99,8 @@ try:
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
 
     # SPACING CONFIGURATION
-    # vertical gap implementation
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    # vertical gap implementation (ανέβασμα του upload κατά τέσσερις γραμμές πιο κοντά)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # IMAGE UPLOAD SECTION
     # file input component placement
