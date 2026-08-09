@@ -18,7 +18,6 @@ Test the production ready Streamlit application equipped with a global Out of Di
 ## 🧠 Core Architecture & R&D Evolution (The 4 Phase Pipeline)
 
 The system was developed through a rigorous 4 phase research and engineering pipeline, ensuring mathematical justification for every architectural decision.
-
 <br>
 
 ### Phase 1: Algorithmic Benchmarking & Baselines
