@@ -43,7 +43,7 @@ The system was developed through a rigorous 4 phase research and engineering pip
 * **Edge AI & Quantization:** Exported the finalized neural architecture into a highly compressed TensorFlow Lite (TFLite) binary optimized for IoT edge deployment.
 * **Telemetry Profiling:** Executed a comprehensive System Resource Audit to monitor footprint constraints.
 
-   
+<br>
 
 ## 🔬 Advanced Statistical Diagnostics
 Beyond standard accuracy, this pipeline is evaluated using stringent industrial and statistical metrics:
@@ -52,7 +52,7 @@ Beyond standard accuracy, this pipeline is evaluated using stringent industrial 
 * **Expected Calibration Error (ECE)**
 * **Matthews Correlation Coefficient (MCC)**
 
-   
+<br>
 
 ## 🛠️ Technology Stack
 * **Deep Learning & Edge AI:** TensorFlow, Keras, TFLite
@@ -61,7 +61,7 @@ Beyond standard accuracy, this pipeline is evaluated using stringent industrial 
 * **Web UI & MLOps:** Streamlit
 * **Data Engineering & Visualization:** Pandas, NumPy, Matplotlib, Seaborn
 
-   
+ <br>  
 
 ## 📂 Repository Structure
 
