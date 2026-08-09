@@ -123,7 +123,7 @@ try:
             img_bgr = cv2.imdecode(file_bytes, 1)
             img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
             
-            col_img_e1, col_img_mid, col_img_e2 = st.columns([2, 4, 2])
+            col_img_e1, col_img_mid, col_img_e2 = st.columns([3, 2, 3])
             with col_img_mid:
                 st.image(img_rgb, caption="Uploaded Sample", width=250)
 
@@ -147,6 +147,8 @@ try:
                     st.metric("SSIM Validation Score", f"{ssim_gate_score:.4f}")
                 
                 else:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    
                     # MODEL EXECUTION BRANCH
                     # classical machine learning inference
                     if selected_model == "Classical ML (SVM + PCA)":
@@ -167,7 +169,6 @@ try:
                         recon = ae_baseline.predict(img_input)[0]
                         mse = np.mean(np.square(img_resized / 255.0 - recon))
                         
-                        st.markdown("<br>", unsafe_allow_html=True)
                         st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
                         st.markdown("<br>", unsafe_allow_html=True)
                         
@@ -179,7 +180,7 @@ try:
                         ax.set_title("Reconstruction Error Heatmap")
                         ax.axis('off')
                         
-                        col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([2, 4, 2])
+                        col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([3, 2, 3])
                         with col_hm_mid:
                             st.pyplot(fig)
 
@@ -187,7 +188,6 @@ try:
                     # structural similarity reference comparison
                     elif selected_model == "SSIM Analysis (Golden Ref)":
                         score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
-                        st.markdown("<br>", unsafe_allow_html=True)
                         if score >= 0.50:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
                         else:
@@ -200,7 +200,6 @@ try:
                         img_resized = cv2.resize(img_rgb, (224, 224))
                         img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
                         pred = mobilenet.predict(img_tensor)[0][0]
-                        st.markdown("<br>", unsafe_allow_html=True)
                         if pred > 0.5:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
