@@ -95,8 +95,8 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL CONFIGURATION
-    # balanced symmetrical layout columns for options with extreme right shift for gatekeeper
-    col_cp, col_space, col_sg = st.columns([3.5, 0.2, 5.3])
+    # balanced symmetrical layout columns for options with gatekeeper shifted to the far right edge
+    col_cp, col_space, col_sg = st.columns([5.3, 0.2, 3.5])
     
     # ENGINE SELECTION WIDGET
     # model selection radio buttons
@@ -112,7 +112,7 @@ try:
         )
         
     # SAFETY GATEKEEPER WIDGET
-    # structural validation checkbox control pushed to the far right edge
+    # structural validation checkbox control pushed to the extreme right margin
     with col_sg:
         st.markdown("<br><br>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
@@ -206,7 +206,7 @@ try:
                     if score >= 0.50:
                         st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
                     st.metric("SSIM Score", f"{score:.4f}")
                 
                 # MODEL EXECUTION BRANCH
