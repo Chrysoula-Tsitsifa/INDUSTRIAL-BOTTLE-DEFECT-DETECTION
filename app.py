@@ -103,20 +103,23 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # IMAGE UPLOAD SECTION
-    # centered layout columns for file input and preview stacking
+    # centered layout columns for file input
     col_empty_u1, col_up, col_empty_u2 = st.columns([2, 4, 2])
     
     # FILE ACQUISITION WIDGET
     # sample image upload interface
     with col_up:
         uploaded_file = st.file_uploader("Upload inspection sample (JPG, PNG)", type=["jpg", "png", "jpeg"])
+
+    # VISUALIZATION PREVIEW
+    # centered layout columns for rendered preview alignment
+    if uploaded_file is not None:
+        file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+        img_bgr = cv2.imdecode(file_bytes, 1)
+        img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
         
-        # VISUALIZATION PREVIEW
-        # uploaded sample rendering container directly underneath
-        if uploaded_file is not None:
-            file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-            img_bgr = cv2.imdecode(file_bytes, 1)
-            img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+        col_img_e1, col_img_mid, col_img_e2 = st.columns([3, 2, 3])
+        with col_img_mid:
             st.image(img_rgb, caption="Uploaded Sample", width=250)
 
     st.markdown("---")
