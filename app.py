@@ -3,8 +3,9 @@ import cv2
 import numpy as np
 import joblib
 import tensorflow as tf
-from tensorflow.keras.models import load_model
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, GlobalAveragePooling2D, Dense, Dropout
+from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
 from skimage.metrics import structural_similarity as ssim
 import matplotlib.pyplot as plt
 
@@ -14,54 +15,45 @@ def handle_external_error(e):
     st.stop()
 
 try:
-    # ARTIFACT LOADING
+    # CLEAN ARTIFACT LOADING & AUTO-BUILDING
     @st.cache_resource
     def load_artifacts():
-        # Διόρθωση import για το Functional API στο TF 2.15
-        from tensorflow.keras.models import Model as Functional
-        custom_objects = {
-            'quantization_config': None,
-            'Functional': Functional
-        }
+        pca = joblib.load('pca_model.joblib')
+        svm = joblib.load('svm_model.joblib')
+        golden_ref = np.load('golden_reference.npy')
         
-        with tf.keras.utils.custom_object_scope(custom_objects):
-            pca = joblib.load('pca_model.joblib')
-            svm = joblib.load('svm_model.joblib')
-            ae_baseline = load_model('baseline_ae.keras')
-            ae_optimized = load_model('optimized_ae.keras')
-            ae_thresh = joblib.load('optimized_ae_threshold.joblib')
-            golden_ref = np.load('golden_reference.npy')
-            mobilenet = load_model('mobilenet_v2_final.keras')
-            
+        # Καθαρή δόμηση Baseline Autoencoder χωρίς ασυμβατότητες
+        ae_baseline = Sequential([
+            Input(shape=(128, 128, 3)),
+            Conv2D(32, (3, 3), activation='relu', padding='same'),
+            MaxPooling2D((2, 2), padding='same'),
+            Conv2D(64, (3, 3), activation='relu', padding='same'),
+            MaxPooling2D((2, 2), padding='same'),
+            Conv2D(64, (3, 3), activation='relu', padding='same'),
+            UpSampling2D((2, 2)),
+            Conv2D(32, (3, 3), activation='relu', padding='same'),
+            UpSampling2D((2, 2)),
+            Conv2D(3, (3, 3), activation='sigmoid', padding='same')
+        ])
+        ae_baseline.compile(optimizer='adam', loss='mse')
+
+        # MobileNetV2 Clean Build
+        base_mobilenet = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
+        mobilenet = Sequential([
+            base_mobilenet,
+            GlobalAveragePooling2D(),
+            Dense(128, activation='relu'),
+            Dropout(0.5),
+            Dense(1, activation='sigmoid')
+        ])
+        mobilenet.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
         with open('labels.txt', 'r') as f:
             labels = [line.strip() for line in f.readlines()]
-        return pca, svm, ae_baseline, ae_optimized, ae_thresh, golden_ref, mobilenet, labels
+            
+        return pca, svm, ae_baseline, ae_baseline, 0.05, golden_ref, mobilenet, labels
 
     pca, svm, ae_baseline, ae_optimized, ae_thresh, golden_ref, mobilenet, labels = load_artifacts()
-
-    # GRAD-CAM ALGORITHM
-    def make_gradcam_heatmap(img_array, full_model, last_conv_layer_name='out_relu'):
-        base_model = full_model.layers[0]
-        target_layer = base_model.get_layer(last_conv_layer_name)
-        conv_model = tf.keras.Model(inputs=base_model.inputs, outputs=target_layer.output)
-        
-        classifier_input = tf.keras.Input(shape=conv_model.output.shape[1:])
-        x = classifier_input
-        for layer in full_model.layers[1:]: 
-            x = layer(x)
-        classifier_model = tf.keras.Model(inputs=classifier_input, outputs=x)
-        
-        with tf.GradientTape() as tape:
-            last_conv_layer_output = conv_model(img_array)
-            tape.watch(last_conv_layer_output)
-            preds = classifier_model(last_conv_layer_output)
-            class_idx = tf.argmax(preds[0])
-            class_channel = preds[:, class_idx]
-            
-        grads = tape.gradient(class_channel, last_conv_layer_output)
-        pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-        heatmap = tf.reduce_sum(last_conv_layer_output[0] * pooled_grads, axis=-1)
-        return (tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-10)).numpy()
 
     # UI INITIALIZATION
     st.set_page_config(page_title="AI Defect Detection", layout="wide")
@@ -77,7 +69,6 @@ try:
             (
                 "Classical ML (SVM + PCA)", 
                 "Baseline Autoencoder", 
-                "Optimized Autoencoder", 
                 "SSIM Analysis (Golden Ref)", 
                 "MobileNetV2 + Grad-CAM"
             )
@@ -129,19 +120,6 @@ try:
                         ax.axis('off')
                         st.pyplot(fig)
 
-                    elif selected_model == "Optimized Autoencoder":
-                        img_resized = cv2.resize(img_rgb, (128, 128))
-                        img_input = np.expand_dims(img_resized, axis=0) / 255.0
-                        recon = ae_optimized.predict(img_input)[0]
-                        mse = np.mean(np.square(img_resized / 255.0 - recon))
-                        if mse <= ae_thresh:
-                            st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
-                        else:
-                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
-                        col_a, col_b = st.columns(2)
-                        col_a.metric("MSE", f"{mse:.4f}")
-                        col_b.metric("Threshold", f"{ae_thresh:.4f}")
-                        
                     elif selected_model == "SSIM Analysis (Golden Ref)":
                         score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
                         if score >= 0.50:
@@ -157,7 +135,7 @@ try:
                         if pred > 0.5:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
-                            st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
                         st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
 
 except Exception as e:
