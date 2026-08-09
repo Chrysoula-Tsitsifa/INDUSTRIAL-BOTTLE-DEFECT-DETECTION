@@ -7,13 +7,13 @@
 
 An enterprise grade, end to end Machine Learning pipeline engineered for automated visual inspection and structural anomaly detection in manufacturing lines. This project demonstrates a complete MLOps lifecycle - From classical algorithmic benchmarking and deep latent space optimization, to Explainable AI (XAI) diagnostics, edge IoT quantization, and system telemetry.
 
-<br><br>
+<br>
 
 ## 🚀 Live Interactive Deployment
 Test the production ready Streamlit application equipped with a global Out of Distribution (OOD) Safety Gatekeeper:  
 👉 **[Launch Streamlit Application](YOUR_STREAMLIT_LIVE_LINK_HERE)**
 
-
+<br>
 
 ## 🧠 Core Architecture & R&D Evolution (The 4 Phase Pipeline)
 
