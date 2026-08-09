@@ -11,7 +11,7 @@ An enterprise grade, end to end Machine Learning pipeline engineered for automat
 
 ## 🚀 Live Interactive Deployment
 Test the production ready Streamlit application equipped with a global Out of Distribution (OOD) Safety Gatekeeper:  
-👉 **([Live Application]((https://industrial-bottle-defect-detection-enviqqfkwautbkyrsyzrzk.streamlit.app/)))**
+👉 **([Live Application]((https://industrial-bottle-defect-detection-enviqqfkwautbkyrsyzrzk.streamlit.app/)))** 
 
 <br>
 
