@@ -162,12 +162,18 @@ try:
                     recon = ae_baseline.predict(img_input)[0]
                     mse = np.mean(np.square(img_resized / 255.0 - recon))
                     st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
-                    fig, ax = plt.subplots()
+                    
+                    # COMPACT HEATMAP RENDERING
+                    # scaled figure size configuration for smaller footprint
+                    fig, ax = plt.subplots(figsize=(4, 3))
                     cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
                     fig.colorbar(cax)
                     ax.set_title("Reconstruction Error Heatmap")
                     ax.axis('off')
-                    st.pyplot(fig)
+                    
+                    col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([2, 4, 2])
+                    with col_hm_mid:
+                        st.pyplot(fig)
 
                 # MODEL EXECUTION BRANCH
                 # structural similarity reference comparison
