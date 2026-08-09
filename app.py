@@ -17,8 +17,14 @@ try:
     # ARTIFACT LOADING
     @st.cache_resource
     def load_artifacts():
-        # Χρήση custom_object_scope για την παράκαμψη του σφάλματος quantization_config
-        with tf.keras.utils.custom_object_scope({'quantization_config': None}):
+        # Διορθωμένο scope για την παράκαμψη ασυμβατοτήτων Keras 3 vs Keras 2
+        from tensorflow.keras.models import Functional
+        custom_objects = {
+            'quantization_config': None,
+            'Functional': Functional
+        }
+        
+        with tf.keras.utils.custom_object_scope(custom_objects):
             pca = joblib.load('pca_model.joblib')
             svm = joblib.load('svm_model.joblib')
             ae_baseline = load_model('baseline_ae.keras')
