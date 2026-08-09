@@ -54,7 +54,7 @@ try:
     st.set_page_config(page_title="AI Defect Detection", layout="wide")
 
     # CSS CENTERING INJECTION
-    # strict absolute horizontal layout configuration.
+    # Strict absolute horizontal layout configuration.
     st.markdown("""
         <style>
         .block-container {
@@ -91,7 +91,7 @@ try:
         )
         
     # STRUCTURAL INTEGRITY GATEKEEPER
-    # industrial safety mechanism for extreme anomaly blockage.
+    # Industrial safety mechanism for extreme anomaly blockage.
     with col_sg:
         st.markdown("<br><br>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
@@ -149,7 +149,7 @@ try:
                     st.markdown("<br>", unsafe_allow_html=True)
                     
                     # RECONSTRUCTION HEATMAP GENERATION
-                    # visual anomaly localization through mse map.
+                    # Visual anomaly localization through mse map.
                     fig, ax = plt.subplots(figsize=(7, 5))
                     cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
                     fig.colorbar(cax)
@@ -170,7 +170,7 @@ try:
                     st.markdown("<br>", unsafe_allow_html=True)
 
                     # STRUCTURAL DIFFERENCE VISUALIZATION
-                    # spatial disparity map for ssim analysis.
+                    # Spatial disparity map for ssim analysis.
                     fig_ssim, ax_ssim = plt.subplots(figsize=(7, 5))
                     cax_ssim = ax_ssim.imshow(diff_map, cmap='jet')
                     fig_ssim.colorbar(cax_ssim)
@@ -185,11 +185,44 @@ try:
                     img_resized = cv2.resize(img_rgb, (224, 224))
                     img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
                     pred = mobilenet.predict(img_tensor)[0][0]
+                    
                     if pred > 0.5:
                         st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                     else:
                         st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
                     st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
+                    st.markdown("<br>", unsafe_allow_html=True)
+
+                    # GRAD-CAM LOCALIZATION
+                    # Visual anomaly regions via gradient flows.
+                    with tf.GradientTape() as tape:
+                        inputs = tf.cast(img_tensor, tf.float32)
+                        conv_outputs = mobilenet.layers[0](inputs)
+                        tape.watch(conv_outputs)
+                        x = mobilenet.layers[1](conv_outputs)
+                        x = mobilenet.layers[2](x)
+                        x = mobilenet.layers[3](x)
+                        predictions = mobilenet.layers[4](x)
+                    
+                    grads = tape.gradient(predictions, conv_outputs)
+                    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+                    heatmap = tf.reduce_sum(tf.multiply(pooled_grads, conv_outputs), axis=-1)[0]
+                    heatmap = np.maximum(heatmap, 0)
+                    heatmap /= np.max(heatmap) if np.max(heatmap) != 0 else 1e-10
+                    
+                    heatmap_resized = cv2.resize(heatmap, (224, 224))
+                    heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
+                    heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+                    superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
+                    
+                    fig_cam, ax_cam = plt.subplots(figsize=(7, 5))
+                    ax_cam.imshow(superimposed)
+                    ax_cam.set_title("Grad-CAM Heatmap Overlay")
+                    ax_cam.axis('off')
+                    
+                    col_cam_e1, col_cam_mid, col_cam_e2 = st.columns([1.5, 7, 1.5])
+                    with col_cam_mid:
+                        st.pyplot(fig_cam)
 
 except Exception as e:
     handle_external_error(e)
