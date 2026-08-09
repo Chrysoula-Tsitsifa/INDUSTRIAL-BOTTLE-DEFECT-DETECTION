@@ -211,7 +211,7 @@ try:
                     heatmap /= np.max(heatmap) if np.max(heatmap) != 0 else 1e-10
                     
                     heatmap_resized = cv2.resize(heatmap, (224, 224))
-                    heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
+                    heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET) 
                     heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
                     superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
                     
