@@ -66,7 +66,7 @@ try:
     st.set_page_config(page_title="AI Defect Detection", layout="wide")
 
     # CSS CENTERING INJECTION
-    # forced absolute horizontal centering for all main block elements
+    # forced absolute horizontal centering and precise layout styling
     st.markdown("""
         <style>
         .block-container {
@@ -74,6 +74,11 @@ try:
             padding-top: 2rem;
             padding-bottom: 2rem;
             margin: auto;
+        }
+        .centered-label {
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -107,9 +112,9 @@ try:
         )
         
     # SAFETY GATEKEEPER WIDGET
-    # structural validation checkbox control
+    # structural validation checkbox control aligned with the horizontal divider line
     with col_sg:
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br><br>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
 
     # SPACING CONFIGURATION
@@ -118,15 +123,16 @@ try:
 
     # IMAGE UPLOAD SECTION
     # perfectly centered layout columns for file input
-    col_empty_u1, col_up, col_empty_u2 = st.columns([2, 4, 2])
+    col_empty_u1, col_up, col_empty_u2 = st.columns([2.5, 4, 2.5])
     
     # FILE ACQUISITION WIDGET
-    # sample image upload interface
+    # sample image upload interface with centered label
     with col_up:
-        uploaded_file = st.file_uploader("Upload inspection sample (JPG, PNG)", type=["jpg", "png", "jpeg"])
+        st.markdown("<div class='centered-label'>Upload inspection sample (JPG, PNG)</div>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
 
     # VISUALIZATION PREVIEW
-    # perfectly centered layout columns for rendered preview alignment
+    # perfectly centered layout columns for rendered preview alignment directly underneath
     if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_bgr = cv2.imdecode(file_bytes, 1)
@@ -181,15 +187,15 @@ try:
                     st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
                     st.markdown("<br>", unsafe_allow_html=True)
                     
-                    # COMPACT HEATMAP RENDERING
-                    # scaled figure size configuration for smaller footprint
-                    fig, ax = plt.subplots(figsize=(4, 3))
+                    # OPTIMIZED HEATMAP RENDERING
+                    # moderately scaled figure size configuration for balanced visibility
+                    fig, ax = plt.subplots(figsize=(6, 4.5))
                     cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
                     fig.colorbar(cax)
                     ax.set_title("Reconstruction Error Heatmap")
                     ax.axis('off')
                     
-                    col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([3, 2, 3])
+                    col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([1.5, 7, 1.5])
                     with col_hm_mid:
                         st.pyplot(fig)
 
