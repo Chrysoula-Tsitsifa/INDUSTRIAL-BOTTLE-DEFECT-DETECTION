@@ -95,8 +95,8 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL CONFIGURATION
-    # balanced symmetrical layout columns for options
-    col_cp, col_space, col_sg = st.columns([4, 0.5, 4])
+    # balanced symmetrical layout columns for options with extreme right shift for gatekeeper
+    col_cp, col_space, col_sg = st.columns([3.5, 0.2, 5.3])
     
     # ENGINE SELECTION WIDGET
     # model selection radio buttons
@@ -112,7 +112,7 @@ try:
         )
         
     # SAFETY GATEKEEPER WIDGET
-    # structural validation checkbox control aligned with the horizontal divider line
+    # structural validation checkbox control pushed to the far right edge
     with col_sg:
         st.markdown("<br><br>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
