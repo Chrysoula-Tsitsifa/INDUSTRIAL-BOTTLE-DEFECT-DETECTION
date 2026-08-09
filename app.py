@@ -67,135 +67,140 @@ try:
     st.title("🏭 AI Visual Anomaly Detection & Comparison")
     st.markdown("---")
 
-    # REPORT SECTION
-    # centered diagnostic report header
-    st.markdown("<h3 style='text-align: center;'>Diagnostic Report</h3>", unsafe_allow_html=True)
-    
-    # SPACING CONFIGURATION
-    # vertical gap implementation
-    st.markdown("<br>", unsafe_allow_html=True)
+    # GLOBAL LAYOUT CENTERING
+    # master column container setup for absolute horizontal centering
+    _, master_col, _ = st.columns([1, 6, 1])
 
-    # CONTROL PANEL CONFIGURATION
-    # centered layout columns for diagnostic options
-    col_empty1, col_cp, col_space, col_sg, col_empty2 = st.columns([1.5, 3, 0.3, 3, 1.5])
-    
-    # ENGINE SELECTION WIDGET
-    # model selection radio buttons
-    with col_cp:
-        selected_model = st.radio(
-            "Select Diagnostic Engine:",
-            (
-                "Classical ML (SVM + PCA)", 
-                "Baseline Autoencoder", 
-                "SSIM Analysis (Golden Ref)", 
-                "MobileNetV2 + Grad-CAM"
-            )
-        )
+    with master_col:
+        # REPORT SECTION
+        # centered diagnostic report header
+        st.markdown("<h3 style='text-align: center;'>Diagnostic Report</h3>", unsafe_allow_html=True)
         
-    # SAFETY GATEKEEPER WIDGET
-    # structural validation checkbox control
-    with col_sg:
+        # SPACING CONFIGURATION
+        # vertical gap implementation
         st.markdown("<br>", unsafe_allow_html=True)
-        use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
 
-    # SPACING CONFIGURATION
-    # vertical gap implementation
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # IMAGE UPLOAD SECTION
-    # centered layout columns for file input
-    col_empty_u1, col_up, col_empty_u2 = st.columns([2, 4, 2])
-    
-    # FILE ACQUISITION WIDGET
-    # sample image upload interface
-    with col_up:
-        uploaded_file = st.file_uploader("Upload inspection sample (JPG, PNG)", type=["jpg", "png", "jpeg"])
-
-    # VISUALIZATION PREVIEW
-    # centered layout columns for rendered preview alignment
-    if uploaded_file is not None:
-        file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-        img_bgr = cv2.imdecode(file_bytes, 1)
-        img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+        # CONTROL PANEL CONFIGURATION
+        # balanced symmetrical layout columns for options
+        col_cp, col_space, col_sg = st.columns([4, 0.5, 4])
         
-        col_img_e1, col_img_mid, col_img_e2 = st.columns([3, 2, 3])
-        with col_img_mid:
-            st.image(img_rgb, caption="Uploaded Sample", width=250)
+        # ENGINE SELECTION WIDGET
+        # model selection radio buttons
+        with col_cp:
+            selected_model = st.radio(
+                "Select Diagnostic Engine:",
+                (
+                    "Classical ML (SVM + PCA)", 
+                    "Baseline Autoencoder", 
+                    "SSIM Analysis (Golden Ref)", 
+                    "MobileNetV2 + Grad-CAM"
+                )
+            )
+            
+        # SAFETY GATEKEEPER WIDGET
+        # structural validation checkbox control
+        with col_sg:
+            st.markdown("<br>", unsafe_allow_html=True)
+            use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
 
-    st.markdown("---")
+        # SPACING CONFIGURATION
+        # vertical gap implementation
+        st.markdown("<br>", unsafe_allow_html=True)
 
-    # EXECUTION PIPELINE
-    # inspection execution logic
-    if uploaded_file is not None:
-        img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+        # IMAGE UPLOAD SECTION
+        # perfectly centered layout columns for file input
+        col_empty_u1, col_up, col_empty_u2 = st.columns([1, 4, 1])
         
-        # TRIGGER BUTTON
-        # diagnostic control button element
-        if st.button("ΕΚΤΕΛΕΣΗ ΕΛΕΓΧΟΥ 🚀", use_container_width=True):
-            img_gray_resized = cv2.resize(img_gray, (128, 128))
-            ssim_gate_score, _ = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
-            
-            # GATEKEEPER VALIDATION
-            # structural sanity check evaluation
-            if use_gatekeeper and ssim_gate_score < 0.40:
-                st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ INVALID IMAGE: Αδυναμία αναγνώρισης δομής.</div>', unsafe_allow_html=True)
-                st.metric("SSIM Validation Score", f"{ssim_gate_score:.4f}")
-            
-            else:
-                # MODEL EXECUTION BRANCH
-                # classical machine learning inference
-                if selected_model == "Classical ML (SVM + PCA)":
-                    img_resized = cv2.resize(img_rgb, (128, 128))
-                    img_flat = img_resized.reshape(1, -1)
-                    img_pca = pca.transform(img_flat)
-                    pred = svm.predict(img_pca)
-                    if pred[0] == 1:
-                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
-                
-                # MODEL EXECUTION BRANCH
-                # baseline autoencoder reconstruction analysis
-                elif selected_model == "Baseline Autoencoder":
-                    img_resized = cv2.resize(img_rgb, (128, 128))
-                    img_input = np.expand_dims(img_resized, axis=0) / 255.0
-                    recon = ae_baseline.predict(img_input)[0]
-                    mse = np.mean(np.square(img_resized / 255.0 - recon))
-                    st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
-                    
-                    # COMPACT HEATMAP RENDERING
-                    # scaled figure size configuration for smaller footprint
-                    fig, ax = plt.subplots(figsize=(4, 3))
-                    cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
-                    fig.colorbar(cax)
-                    ax.set_title("Reconstruction Error Heatmap")
-                    ax.axis('off')
-                    
-                    col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([2, 4, 2])
-                    with col_hm_mid:
-                        st.pyplot(fig)
+        # FILE ACQUISITION WIDGET
+        # sample image upload interface
+        with col_up:
+            uploaded_file = st.file_uploader("Upload inspection sample (JPG, PNG)", type=["jpg", "png", "jpeg"])
 
-                # MODEL EXECUTION BRANCH
-                # structural similarity reference comparison
-                elif selected_model == "SSIM Analysis (Golden Ref)":
-                    score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
-                    if score >= 0.50:
-                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
-                    st.metric("SSIM Score", f"{score:.4f}")
+        # VISUALIZATION PREVIEW
+        # perfectly centered layout columns for rendered preview alignment
+        if uploaded_file is not None:
+            file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+            img_bgr = cv2.imdecode(file_bytes, 1)
+            img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+            
+            col_img_e1, col_img_mid, col_img_e2 = st.columns([2, 3, 2])
+            with col_img_mid:
+                st.image(img_rgb, caption="Uploaded Sample", width=250)
+
+        st.markdown("---")
+
+        # EXECUTION PIPELINE
+        # inspection execution logic
+        if uploaded_file is not None:
+            img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+            
+            # TRIGGER BUTTON
+            # diagnostic control button element
+            if st.button("ΕΚΤΕΛΕΣΗ ΕΛΕΓΧΟΥ 🚀", use_container_width=True):
+                img_gray_resized = cv2.resize(img_gray, (128, 128))
+                ssim_gate_score, _ = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
                 
-                # MODEL EXECUTION BRANCH
-                # mobilenet classification and explanation inference
-                elif selected_model == "MobileNetV2 + Grad-CAM":
-                    img_resized = cv2.resize(img_rgb, (224, 224))
-                    img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
-                    pred = mobilenet.predict(img_tensor)[0][0]
-                    if pred > 0.5:
-                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
-                    st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
+                # GATEKEEPER VALIDATION
+                # structural sanity check evaluation
+                if use_gatekeeper and ssim_gate_score < 0.40:
+                    st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ INVALID IMAGE: Αδυναμία αναγνώρισης δομής.</div>', unsafe_allow_html=True)
+                    st.metric("SSIM Validation Score", f"{ssim_gate_score:.4f}")
+                
+                else:
+                    # MODEL EXECUTION BRANCH
+                    # classical machine learning inference
+                    if selected_model == "Classical ML (SVM + PCA)":
+                        img_resized = cv2.resize(img_rgb, (128, 128))
+                        img_flat = img_resized.reshape(1, -1)
+                        img_pca = pca.transform(img_flat)
+                        pred = svm.predict(img_pca)
+                        if pred[0] == 1:
+                            st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
+                        else:
+                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                    
+                    # MODEL EXECUTION BRANCH
+                    # baseline autoencoder reconstruction analysis
+                    elif selected_model == "Baseline Autoencoder":
+                        img_resized = cv2.resize(img_rgb, (128, 128))
+                        img_input = np.expand_dims(img_resized, axis=0) / 255.0
+                        recon = ae_baseline.predict(img_input)[0]
+                        mse = np.mean(np.square(img_resized / 255.0 - recon))
+                        st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
+                        
+                        # COMPACT HEATMAP RENDERING
+                        # scaled figure size configuration for smaller footprint
+                        fig, ax = plt.subplots(figsize=(4, 3))
+                        cax = ax.imshow(np.mean(np.abs(img_resized / 255.0 - recon), axis=-1), cmap='jet')
+                        fig.colorbar(cax)
+                        ax.set_title("Reconstruction Error Heatmap")
+                        ax.axis('off')
+                        
+                        col_hm_e1, col_hm_mid, col_hm_e2 = st.columns([2, 4, 2])
+                        with col_hm_mid:
+                            st.pyplot(fig)
+
+                    # MODEL EXECUTION BRANCH
+                    # structural similarity reference comparison
+                    elif selected_model == "SSIM Analysis (Golden Ref)":
+                        score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
+                        if score >= 0.50:
+                            st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
+                        else:
+                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
+                        st.metric("SSIM Score", f"{score:.4f}")
+                    
+                    # MODEL EXECUTION BRANCH
+                    # mobilenet classification and explanation inference
+                    elif selected_model == "MobileNetV2 + Grad-CAM":
+                        img_resized = cv2.resize(img_rgb, (224, 224))
+                        img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
+                        pred = mobilenet.predict(img_tensor)[0][0]
+                        if pred > 0.5:
+                            st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
+                        else:
+                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                        st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
 
 # EXCEPTION MANAGEMENT
 # global failure catching block
