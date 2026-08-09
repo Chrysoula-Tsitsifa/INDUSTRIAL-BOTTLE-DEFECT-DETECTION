@@ -68,15 +68,15 @@ Beyond standard accuracy, this pipeline is evaluated using stringent industrial 
 ```text
 Industrial Bottle Defect Detection/
 │
-├── app/                              # Production UI & API
-│   ├── app.py                        # Streamlit Application
-│   ├── requirements.txt              # Dependency Management
-│   └── *.keras / *.joblib / *.npy    # Serialized Models & Golden References
+├── app/                                              # Production UI & API
+│   ├── app.py                                        # Streamlit Application
+│   ├── requirements.txt                              # Dependency Management
+│   └── *.keras / *.joblib / *.npy                    # Serialized Models & Golden References
 │
-├── notebooks/                        # The 4 Phase R&D Pipeline
+├── notebooks/                                        # The 4 Phase R&D Pipeline
 │   ├── 01_baseline_and_benchmarking.ipynb
 │   ├── 02_deep_learning_optimization.ipynb
 │   ├── 03_data_augmentation_quality_control.ipynb
 │   └── 04_transfer_learning_xai_and_edge.ipynb
 │
-└── README.md                         # Technical Documentation
+└── README.md                                         # Technical Documentation
