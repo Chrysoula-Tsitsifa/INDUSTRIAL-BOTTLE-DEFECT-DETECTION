@@ -17,8 +17,8 @@ try:
     # ARTIFACT LOADING
     @st.cache_resource
     def load_artifacts():
-        # Διορθωμένο scope για την παράκαμψη ασυμβατοτήτων Keras 3 vs Keras 2
-        from tensorflow.keras.models import Functional
+        # Διόρθωση import για το Functional API στο TF 2.15
+        from tensorflow.keras.models import Model as Functional
         custom_objects = {
             'quantization_config': None,
             'Functional': Functional
@@ -157,7 +157,7 @@ try:
                         if pred > 0.5:
                             st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
                         else:
-                            st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                            st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
                         st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
 
 except Exception as e:
