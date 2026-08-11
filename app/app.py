@@ -42,6 +42,10 @@ try:
             Conv2D(3, (3, 3), activation='sigmoid', padding='same')
         ])
         ae_baseline.compile(optimizer='adam', loss='mse')
+        
+        # PRE-TRAINED WEIGHTS
+        # Integration of parameters from the autoencoder .h5 file.
+        ae_baseline.load_weights('app/autoencoder_model.h5')
 
         base_mobilenet = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
         mobilenet = Sequential([
@@ -52,6 +56,10 @@ try:
             Dense(1, activation='sigmoid')
         ])
         mobilenet.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+        
+        # PRE-TRAINED WEIGHTS
+        # Integration of parameters from the mobilenet .h5 file.
+        mobilenet.load_weights('app/bottle_model_final_tuned.h5')
 
         with open('app/labels.txt', 'r') as f:
             labels = [line.strip() for line in f.readlines()]
@@ -151,14 +159,14 @@ try:
         
         # TRIGGER BUTTON
         # Diagnostic control button element.
-        if st.button("ΕΚΤΕΛΕΣΗ ΕΛΕΓΧΟΥ 🚀", use_container_width=True):
+        if st.button("RUN INSPECTION 🚀", use_container_width=True):
             img_gray_resized = cv2.resize(img_gray, (128, 128))
             ssim_gate_score, _ = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
             
             # GATEKEEPER VALIDATION
             # Structural sanity check evaluation.
             if use_gatekeeper and ssim_gate_score < 0.40:
-                st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ INVALID IMAGE: Αδυναμία αναγνώρισης δομής.</div>', unsafe_allow_html=True)
+                st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ INVALID IMAGE: Structural recognition failure.</div>', unsafe_allow_html=True)
                 st.metric("SSIM Validation Score", f"{ssim_gate_score:.4f}")
             
             else:
@@ -172,9 +180,9 @@ try:
                     img_pca = pca.transform(img_flat)
                     pred = svm.predict(img_pca)
                     if pred[0] == 1:
-                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (GOOD)</div>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (ANOMALY)</div>', unsafe_allow_html=True)
                 
                 # MODEL EXECUTION BRANCH
                 # Baseline autoencoder reconstruction analysis.
@@ -204,9 +212,9 @@ try:
                 elif selected_model == "SSIM Analysis (Golden Ref)":
                     score, diff_map = ssim(golden_ref, img_gray_resized, full=True, data_range=255)
                     if score >= 0.50:
-                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (PASSED)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (PASSED)</div>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (FAILED)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (FAILED)</div>', unsafe_allow_html=True)
                     st.metric("SSIM Score", f"{score:.4f}")
                     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -229,10 +237,17 @@ try:
                     img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
                     pred = mobilenet.predict(img_tensor)[0][0]
                     
-                    if pred > 0.5:
-                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ ΚΑΤΑΣΤΑΣΗ: ΦΥΣΙΟΛΟΓΙΚΟ (GOOD)</div>', unsafe_allow_html=True)
+                    # UNCERTAINTY ZONE
+                    # Boundaries for the human audit requirement.
+                    if 0.40 <= pred <= 0.60:
+                        st.markdown('<div style="background-color: orange; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">⚠️ UNCERTAINTY: HUMAN AUDIT REQUIRED</div>', unsafe_allow_html=True)
+                    
+                    # OPTIMAL THRESHOLD
+                    # Mathematical boundary for the final decision.
+                    elif pred > 0.60:
+                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (GOOD)</div>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ ΚΑΤΑΣΤΑΣΗ: ΕΛΑΤΤΩΜΑΤΙΚΟ (ANOMALY)</div>', unsafe_allow_html=True)
+                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (ANOMALY)</div>', unsafe_allow_html=True)
                     st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
                     st.markdown("<br>", unsafe_allow_html=True)
 
