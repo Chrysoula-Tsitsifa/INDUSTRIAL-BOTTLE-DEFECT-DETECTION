@@ -226,7 +226,7 @@ try:
 		    # Manual centering to force focus on the bottle orifice.
                     h, w = img_rgb.shape[:2]
                     center_y, center_x = h // 2, w // 2
-                    size = 1500 # Προσαρμόζεις αυτό το νούμερο ανάλογα με το πόσο πρέπει να κόψεις
+                    size = 200 # Προσαρμόζεις αυτό το νούμερο ανάλογα με το πόσο πρέπει να κόψεις
                     img_resized = cv2.resize(img_rgb, (224, 224))
                     img_tensor = np.expand_dims(img_resized, axis=0).astype(np.float32) / 255.0
                     pred = mobilenet.predict(img_tensor)[0][0]
