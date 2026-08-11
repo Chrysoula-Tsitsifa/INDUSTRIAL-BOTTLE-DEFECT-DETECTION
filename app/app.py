@@ -222,7 +222,7 @@ try:
                 # Mobilenet classification and explanation inference.
                 elif selected_model == "MobileNetV2 + Grad-CAM":
                     img_resized = cv2.resize(img_rgb, (224, 224))
-                    img_tensor = preprocess_input(np.expand_dims(img_resized, axis=0).astype(np.float32))
+                    img_tensor = np.expand_dims(img_resized, axis=0).astype(np.float32) / 255.0
                     pred = mobilenet.predict(img_tensor)[0][0]
                     
                     # UNCERTAINTY ZONE
