@@ -165,13 +165,20 @@ try:
                     else:
                         st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (ANOMALY)</div>', unsafe_allow_html=True)
                 
-                # MODEL EXECUTION BRANCH
+# MODEL EXECUTION BRANCH
                 # Baseline autoencoder reconstruction analysis.
                 elif selected_model == "Baseline Autoencoder":
                     img_resized = cv2.resize(img_rgb, (128, 128))
                     img_input = np.expand_dims(img_resized, axis=0) / 255.0
                     recon = ae_baseline.predict(img_input)[0]
                     mse = np.mean(np.square(img_resized / 255.0 - recon))
+                    
+                    # ANOMALY DETECTION THRESHOLD
+                    # Evaluation of the reconstruction error.
+                    if mse > ae_thresh:
+                        st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (ANOMALY)</div>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (GOOD)</div>', unsafe_allow_html=True)
                     
                     st.metric("Reconstruction Error (MSE)", f"{mse:.4f}")
                     st.markdown("<br>", unsafe_allow_html=True)
