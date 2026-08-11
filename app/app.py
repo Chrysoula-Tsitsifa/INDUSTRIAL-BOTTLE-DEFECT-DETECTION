@@ -45,7 +45,7 @@ try:
         
         # PRE-TRAINED WEIGHTS
         # Integration of parameters from the autoencoder .h5 file.
-        ae_baseline.load_weights('app/autoencoder_model.h5')
+        ae_baseline.load_weights('app/best_model_optimized.h5')
 
         base_mobilenet = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
         mobilenet = Sequential([
