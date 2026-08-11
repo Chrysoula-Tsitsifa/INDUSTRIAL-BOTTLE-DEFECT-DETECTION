@@ -5,9 +5,17 @@ import cv2
 import numpy as np
 import joblib
 import tensorflow as tf
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from skimage.metrics import structural_similarity as ssim
 import matplotlib.pyplot as plt
+
+# COMPATIBILITY LAYER
+# Custom dense layer for the omission of the quantization config parameter.
+class SafeDense(Dense):
+    def __init__(self, **kwargs):
+        kwargs.pop('quantization_config', None)
+        super().__init__(**kwargs)
 
 # ERROR HANDLING SETUP
 # Global exception management.
@@ -29,8 +37,9 @@ try:
         ae_baseline = tf.keras.models.load_model('app/best_model_optimized.h5', compile=False)
 
         # MOBILENETV2 LOADING
-        # Full architecture and weights extraction from file without compilation metrics.
-        mobilenet = tf.keras.models.load_model('app/bottle_model_final_tuned.h5', compile=False)
+        # Full architecture and weights extraction with custom object scope.
+        with tf.keras.utils.custom_object_scope({'Dense': SafeDense}):
+            mobilenet = tf.keras.models.load_model('app/bottle_model_final_tuned.h5', compile=False)
 
         # CLASS LABELS EXTRACTION
         # Reference classes from text file.
