@@ -30,8 +30,7 @@ try:
         
         # OPTIMIZED AUTOENCODER LOADING
         # Full architecture and weights extraction from file.
-        ae_baseline = tf.keras.models.load_model('app/best_model_optimized.h5')
-
+        ae_baseline = tf.keras.models.load_model('app/best_model_optimized.h5', compile=False)
         # MOBILENETV2 ARCHITECTURE CONSTRUCTION
         # Base model instantiation with custom classification layers.
         base_mobilenet = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
