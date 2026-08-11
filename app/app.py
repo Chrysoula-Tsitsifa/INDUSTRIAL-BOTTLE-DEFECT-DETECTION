@@ -245,36 +245,68 @@ try:
                     st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
                     st.markdown("<br>", unsafe_allow_html=True)
 
-                    # GRAD CAM LOCALIZATION
-                    # Visual anomaly regions via gradient flows.
+# GRAD CAM LOCALIZATION (ROBUST VERSION)
+                # Visual anomaly regions via direct feature extractor and classifier mapping.
+                
+                # 1. Βρίσκουμε το τελευταίο conv layer δυναμικά
+                last_conv_layer = None
+                for layer in reversed(mobilenet.layers):
+                    if len(layer.output.shape) == 4:
+                        last_conv_layer = layer
+                        break
+                
+                if last_conv_layer is None:
+                    # Fallback αν δεν βρει 4D layer στο κεντρικό μοντέλο
+                    base_model = mobilenet.layers[0] if hasattr(mobilenet.layers[0], 'layers') else mobilenet
+                    for layer in reversed(base_model.layers):
+                        if len(layer.output.shape) == 4:
+                            last_conv_layer = layer
+                            break
+
+                # 2. Φτιάχνουμε τα sub-models για το Grad-CAM
+                if last_conv_layer:
+                    # Feature extractor μέχρι το τελευταίο conv layer
+                    feature_extractor = tf.keras.models.Model(inputs=mobilenet.inputs, outputs=last_conv_layer.output)
+                    
                     with tf.GradientTape() as tape:
                         inputs = tf.cast(img_tensor, tf.float32)
-                        conv_outputs = mobilenet.layers[0](inputs)
+                        conv_outputs = feature_extractor(inputs)
                         tape.watch(conv_outputs)
-                        x = mobilenet.layers[1](conv_outputs)
-                        x = mobilenet.layers[2](x)
-                        x = mobilenet.layers[3](x)
-                        predictions = mobilenet.layers[4](x)
+                        
+                        # Υπολογισμός προβλέψεων από τα επόμενα layers
+                        preds = mobilenet(inputs)
+                        # Ανάλογα αν είναι binary (1 κόμβος) ή categorical
+                        if preds.shape[-1] == 1:
+                            class_channel = preds[:, 0]
+                        else:
+                            class_idx = tf.argmax(preds[0])
+                            class_channel = preds[:, class_idx]
                     
-                    grads = tape.gradient(predictions, conv_outputs)
+                    grads = tape.gradient(class_channel, conv_outputs)
                     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
                     heatmap = tf.reduce_sum(tf.multiply(pooled_grads, conv_outputs), axis=-1)[0]
                     heatmap = np.maximum(heatmap, 0)
-                    heatmap /= np.max(heatmap) if np.max(heatmap) != 0 else 1e-10
-                    
-                    heatmap_resized = cv2.resize(heatmap, (224, 224))
-                    heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
-                    heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
-                    superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
-                    
-                    fig_cam, ax_cam = plt.subplots(figsize=(7, 5))
-                    ax_cam.imshow(superimposed)
-                    ax_cam.set_title("Grad-CAM Heatmap Overlay")
-                    ax_cam.axis('off')
-                    
-                    col_cam_e1, col_cam_mid, col_cam_e2 = st.columns([1.5, 7, 1.5])
-                    with col_cam_mid:
-                        st.pyplot(fig_cam)
+                    if np.max(heatmap) != 0:
+                        heatmap /= np.max(heatmap)
+                    else:
+                        heatmap = heatmap * 0.0
+                        
+                    heatmap_resized = cv2.resize(heatmap.numpy(), (224, 224))
+                else:
+                    heatmap_resized = np.zeros((224, 224))
+
+                heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
+                heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+                superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
+                
+                fig_cam, ax_cam = plt.subplots(figsize=(7, 5))
+                ax_cam.imshow(superimposed)
+                ax_cam.set_title("Grad-CAM Heatmap Overlay")
+                ax_cam.axis('off')
+                
+                col_cam_e1, col_cam_mid, col_cam_e2 = st.columns([1.5, 7, 1.5])
+                with col_cam_mid:
+                    st.pyplot(fig_cam)
 
 except Exception as e:
     handle_external_error(e)
