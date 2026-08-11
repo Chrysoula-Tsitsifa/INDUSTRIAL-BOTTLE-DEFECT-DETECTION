@@ -1,20 +1,16 @@
 # IMPORT SECTION
-# Necessary library inclusions.
 # Core dependencies.
 import streamlit as st
 import cv2
 import numpy as np
 import joblib
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, GlobalAveragePooling2D, Dense, Dropout
-from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from skimage.metrics import structural_similarity as ssim
 import matplotlib.pyplot as plt
 
 # ERROR HANDLING SETUP
 # Global exception management.
-# Custom error display utility.
 def handle_external_error(e):
     st.markdown(f'<div style="background-color: red; color: white; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold;">System Error: {str(e)}</div>', unsafe_allow_html=True)
     st.stop()
@@ -29,23 +25,12 @@ try:
         golden_ref = np.load('app/golden_reference.npy')
         
         # OPTIMIZED AUTOENCODER LOADING
-        # Full architecture and weights extraction from file.
+        # Full architecture and weights extraction from file without compilation metrics.
         ae_baseline = tf.keras.models.load_model('app/best_model_optimized.h5', compile=False)
-        # MOBILENETV2 ARCHITECTURE CONSTRUCTION
-        # Base model instantiation with custom classification layers.
-        base_mobilenet = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
-        mobilenet = Sequential([
-            base_mobilenet,
-            GlobalAveragePooling2D(),
-            Dense(128, activation='relu'),
-            Dropout(0.5),
-            Dense(1, activation='sigmoid')
-        ])
-        mobilenet.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-        
-        # PRE-TRAINED WEIGHTS
-        # Integration of parameters from the mobilenet artifact.
-        mobilenet.load_weights('app/bottle_model_final_tuned.h5')
+
+        # MOBILENETV2 LOADING
+        # Full architecture and weights extraction from file without compilation metrics.
+        mobilenet = tf.keras.models.load_model('app/bottle_model_final_tuned.h5', compile=False)
 
         # CLASS LABELS EXTRACTION
         # Reference classes from text file.
@@ -58,7 +43,6 @@ try:
 
     # USER INTERFACE SETUP
     # Page configuration parameters.
-    # Main header branding.
     st.set_page_config(page_title="AI Defect Detection", layout="wide")
 
     # CSS CENTERING INJECTION
