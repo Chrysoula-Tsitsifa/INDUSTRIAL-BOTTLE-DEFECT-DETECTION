@@ -108,7 +108,6 @@ try:
         
         # IMAGE ENHANCEMENT TOGGLE
         # Option for visual presentation enhancement via contrast filter.
-        st.markdown("<br>", unsafe_allow_html=True)
         use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
 
     # SPACING CONFIGURATION
