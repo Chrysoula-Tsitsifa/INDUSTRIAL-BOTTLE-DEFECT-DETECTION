@@ -46,7 +46,9 @@ try:
         with open('app/labels.txt', 'r') as f:
             labels = [line.strip() for line in f.readlines()]
             
-        return pca, svm, ae_baseline, ae_baseline, 0.05, golden_ref, mobilenet, labels
+        # ANOMALY THRESHOLD CALIBRATION
+        # Strict industrial limit for mean squared error evaluation.
+        return pca, svm, ae_baseline, ae_baseline, 0.0011, golden_ref, mobilenet, labels
 
     pca, svm, ae_baseline, ae_optimized, ae_thresh, golden_ref, mobilenet, labels = load_artifacts()
 
