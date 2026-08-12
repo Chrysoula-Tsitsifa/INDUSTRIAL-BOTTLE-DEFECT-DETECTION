@@ -99,7 +99,7 @@ try:
                 "MobileNetV2 + Grad-CAM"
             )
         )
-        
+
     # STRUCTURAL INTEGRITY GATEKEEPER
     # Industrial safety mechanism for extreme anomaly blockage.
     with col_sg:
