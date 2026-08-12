@@ -69,6 +69,14 @@ try:
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
+        /* ALIGNMENT FIX */
+        /* Exact vertical spacing for targeted checkbox alignment */
+        .aligned-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 27px;
+            margin-top: 32px;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -105,13 +113,13 @@ try:
     # STRUCTURAL INTEGRITY GATEKEEPER
     # Industrial safety mechanism for extreme anomaly blockage.
     with col_sg:
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown('<div class="aligned-checkboxes">', unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
         
         # IMAGE ENHANCEMENT TOGGLE
         # Option for visual presentation enhancement via contrast filter.
-        st.markdown("<br>", unsafe_allow_html=True)
         use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # SPACING CONFIGURATION
     # Vertical gap implementation.
