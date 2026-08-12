@@ -69,14 +69,6 @@ try:
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
-        /* ALIGNMENT FIX */
-        /* Exact vertical spacing for targeted checkbox alignment */
-        .aligned-checkboxes {
-            display: flex;
-            flex-direction: column;
-            gap: 27px;
-            margin-top: 32px;
-        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -92,7 +84,7 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL
-    # Balanced symmetrical layout columns for options with precise vertical alignment.
+    # Balanced symmetrical layout columns for options with precise line alignment.
     col_cp, col_space, col_sg = st.columns([5.3, 0.2, 3.5])
     
     # ENGINE SELECTION
@@ -113,13 +105,12 @@ try:
     # STRUCTURAL INTEGRITY GATEKEEPER
     # Industrial safety mechanism for extreme anomaly blockage.
     with col_sg:
-        st.markdown('<div class="aligned-checkboxes">', unsafe_allow_html=True)
+        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
         
         # IMAGE ENHANCEMENT TOGGLE
         # Option for visual presentation enhancement via contrast filter.
         use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # SPACING CONFIGURATION
     # Vertical gap implementation.
