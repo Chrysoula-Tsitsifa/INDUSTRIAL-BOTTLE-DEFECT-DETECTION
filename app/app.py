@@ -90,14 +90,16 @@ try:
     # ENGINE SELECTION
     # Model selection radio buttons.
     with col_cp:
+        st.markdown("**Select Diagnostic Engine:**")
         selected_model = st.radio(
-            "Select Diagnostic Engine:",
+            "",
             (
                 "Classical ML (SVM + PCA)", 
                 "Baseline Autoencoder", 
                 "SSIM Analysis (Golden Ref)", 
                 "MobileNetV2 + Grad-CAM"
-            )
+            ),
+            label_visibility="collapsed"
         )
         
     # STRUCTURAL INTEGRITY GATEKEEPER
@@ -108,6 +110,7 @@ try:
         
         # IMAGE ENHANCEMENT TOGGLE
         # Option for visual presentation enhancement via contrast filter.
+        st.markdown("<br>", unsafe_allow_html=True)
         use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
 
     # SPACING CONFIGURATION
