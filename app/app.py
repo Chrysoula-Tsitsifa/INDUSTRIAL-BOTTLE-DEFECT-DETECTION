@@ -228,7 +228,12 @@ try:
                     center_y, center_x = h // 2, w // 2
                     size = 200 
                     img_resized = cv2.resize(img_rgb, (224, 224))
-                    img_tensor = np.expand_dims(img_resized, axis=0).astype(np.float32) / 255.0
+                    
+                    # PREPROCESSING FIX
+                    # Application of official MobileNetV2 scaling limits (-1 to 1).
+                    img_array = np.expand_dims(img_resized, axis=0).astype(np.float32)
+                    img_tensor = preprocess_input(img_array)
+                    
                     pred = mobilenet.predict(img_tensor)[0][0]
                     
                     # UNCERTAINTY ZONE
@@ -289,8 +294,7 @@ try:
                         # HEATMAP SYNTHESIS
                         # Matrix multiplication and extraction as numpy array.
                         heatmap_tensor = tf.reduce_sum(tf.multiply(pooled_grads, last_conv_layer_output), axis=-1)[0]
-                        heatmap = heatmap_tensor.numpy()
-                        heatmap = np.maximum(heatmap, 0)
+                        heatmap = np.maximum(heatmap_tensor.numpy(), 0)
                         
                         if np.max(heatmap) != 0:
                             heatmap /= np.max(heatmap)
