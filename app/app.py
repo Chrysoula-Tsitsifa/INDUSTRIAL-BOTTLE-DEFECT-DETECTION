@@ -84,7 +84,7 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL
-    # Balanced symmetrical layout columns for options with shifted checkboxes.
+    # Balanced symmetrical layout columns for options with precise vertical alignment.
     col_cp, col_space, col_sg = st.columns([5.3, 0.2, 3.5])
     
     # ENGINE SELECTION
@@ -99,14 +99,16 @@ try:
                 "MobileNetV2 + Grad-CAM"
             )
         )
-
+        
     # STRUCTURAL INTEGRITY GATEKEEPER
     # Industrial safety mechanism for extreme anomaly blockage.
     with col_sg:
+        st.markdown("<br>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
         
         # IMAGE ENHANCEMENT TOGGLE
         # Option for visual presentation enhancement via contrast filter.
+        st.markdown("<br>", unsafe_allow_html=True)
         use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
 
     # SPACING CONFIGURATION
