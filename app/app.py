@@ -1,5 +1,5 @@
 # IMPORT SECTION
-# Core dependencies for the application environment.
+# Core dependencies for application environment.
 import streamlit as st
 import cv2
 import numpy as np
@@ -11,7 +11,7 @@ from skimage.metrics import structural_similarity as ssim
 import matplotlib.pyplot as plt
 
 # COMPATIBILITY LAYER
-# Custom dense layer for the omission of the quantization config parameter.
+# Custom dense layer for omission of quantization config parameter.
 class SafeDense(Dense):
     def __init__(self, **kwargs):
         kwargs.pop('quantization_config', None)
@@ -25,7 +25,7 @@ def handle_external_error(e):
 
 try:
     # ARTIFACT INITIALIZATION
-    # Persistent models and reference data from the application folder.
+    # Persistent models and reference data from application folder.
     @st.cache_resource
     def load_artifacts():
         pca = joblib.load('app/pca_model.joblib')
@@ -51,11 +51,9 @@ try:
     pca, svm, ae_baseline, ae_optimized, ae_thresh, golden_ref, mobilenet, labels = load_artifacts()
 
     # USER INTERFACE
-    # Page configuration parameters.
+    # Strict absolute horizontal layout configuration.
     st.set_page_config(page_title="AI Defect Detection", layout="wide")
 
-    # CSS CENTERING
-    # Strict absolute horizontal layout configuration.
     st.markdown("""
         <style>
         .block-container {
@@ -84,7 +82,7 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL
-    # Balanced symmetrical layout columns for options with gatekeeper shift to the far right edge.
+    # Balanced symmetrical layout columns for options with gatekeeper shift to far right edge.
     col_cp, col_space, col_sg = st.columns([5.3, 0.2, 3.5])
     
     # ENGINE SELECTION
@@ -105,6 +103,10 @@ try:
     with col_sg:
         st.markdown("<br><br>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
+        
+        # IMAGE ENHANCEMENT TOGGLE
+        # Option for visual presentation enhancement via contrast filter.
+        use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
 
     # SPACING CONFIGURATION
     # Vertical gap implementation.
@@ -134,7 +136,7 @@ try:
     st.markdown("---")
 
     # EXECUTION PIPELINE
-    # Execution of the inspection logic.
+    # Inspection logic execution.
     if uploaded_file is not None:
         img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
         
@@ -174,7 +176,7 @@ try:
                     mse = np.mean(np.square(img_resized / 255.0 - recon))
                     
                     # ANOMALY THRESHOLD
-                    # Evaluation of the reconstruction error.
+                    # Evaluation of reconstruction error.
                     if mse > ae_thresh:
                         st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (ANOMALY)</div>', unsafe_allow_html=True)
                     else:
@@ -202,7 +204,7 @@ try:
                     
                     # STRICT INDUSTRIAL THRESHOLD
                     # Evaluation limit for structural integrity.
-                    if score >= 0.74:
+                    if score >= 0.80:
                         st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (PASSED)</div>', unsafe_allow_html=True)
                     else:
                         st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (FAILED)</div>', unsafe_allow_html=True)
@@ -228,11 +230,20 @@ try:
                 elif selected_model == "MobileNetV2 + Grad-CAM":
 
                     # IMAGE PREPROCESSING
-                    # Format preparation for the neural network.
+                    # Format preparation for neural network.
                     img_for_inference = img_rgb.copy()
+                    
+                    # SOFT CLAHE ENHANCEMENT
+                    # Subtle contrast adaptation for structure clarity without noise amplification.
+                    if use_clahe:
+                        lab = cv2.cvtColor(img_for_inference, cv2.COLOR_RGB2LAB)
+                        l, a, b = cv2.split(lab)
+                        clahe = cv2.createCLAHE(clipLimit=1.2, tileGridSize=(8, 8))
+                        l = clahe.apply(l)
+                        img_for_inference = cv2.cvtColor(cv2.merge((l, a, b)), cv2.COLOR_LAB2RGB)
 
                     # ROI CROPPING
-                    # Manual alignment for the bottleneck orifice focus.
+                    # Manual alignment for bottleneck orifice focus.
                     h, w = img_for_inference.shape[:2]
                     center_y, center_x = h // 2, w // 2
                     size = 200 
@@ -244,16 +255,16 @@ try:
                     img_tensor = preprocess_input(img_array)
                     
                     # ROBUST INFERENCE
-                    # Neural evaluation strictly on the raw data stream.
+                    # Neural evaluation on preprocessed data stream.
                     pred = mobilenet.predict(img_tensor)[0][0]
                     
                     # UNCERTAINTY ZONE
-                    # Boundaries for the human audit requirement.
+                    # Boundaries for human audit requirement.
                     if 0.40 <= pred <= 0.60:
                         st.markdown('<div style="background-color: orange; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">⚠️ UNCERTAINTY: HUMAN AUDIT REQUIRED</div>', unsafe_allow_html=True)
                     
                     # OPTIMAL THRESHOLD
-                    # Mathematical boundary for the final decision.
+                    # Mathematical boundary for final decision.
                     elif pred > 0.60:
                         st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (GOOD)</div>', unsafe_allow_html=True)
                     else:
@@ -263,9 +274,6 @@ try:
 
                     # GRAD CAM LOCALIZATION
                     # Visual anomaly regions via decoupled neural architecture.
-                    
-                    # BACKBONE SUBSAMPLING
-                    # Extraction of the primary feature extractor for gradient flow.
                     base_model = mobilenet.layers[0]
                     
                     last_conv_layer = None
@@ -294,11 +302,11 @@ try:
                             preds = classifier_model(last_conv_layer_output)
                             
                             # CLASS CHANNEL SELECTION
-                            # Dimension evaluation for the specific node gradient.
+                            # Dimension evaluation for specific node gradient.
                             if preds.shape[-1] == 1:
                                 
                                 # BINARY GRADIENT INVERSION
-                                # Inversion of the probability channel for the defective class.
+                                # Inversion of probability channel for defective class.
                                 if pred <= 0.60:
                                     class_channel = 1.0 - preds[:, 0]
                                 else:
@@ -325,13 +333,13 @@ try:
                         heatmap_resized = np.zeros((224, 224))
 
                     # VISUAL OVERLAY
-                    # Coloration and fusion with the raw background matrix.
+                    # Coloration and fusion with designated background matrix.
                     heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
                     heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
                     superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
                     
                     # DIAGNOSTIC PLOT
-                    # Matplotlib synthesis of the final heat overlay.
+                    # Matplotlib synthesis of final heat overlay.
                     fig_cam, ax_cam = plt.subplots(figsize=(7, 5))
                     ax_cam.imshow(superimposed)
                     ax_cam.set_title("Grad-CAM Heatmap Overlay")
