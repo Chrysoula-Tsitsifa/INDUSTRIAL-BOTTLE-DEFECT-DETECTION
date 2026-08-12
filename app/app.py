@@ -99,9 +99,10 @@ try:
                 "MobileNetV2 + Grad-CAM"
             )
         )
-        
-        # STRUCTURAL INTEGRITY GATEKEEPER
-        # Industrial safety mechanism for extreme anomaly blockage.
+
+    # STRUCTURAL INTEGRITY GATEKEEPER
+    # Industrial safety mechanism for extreme anomaly blockage.
+    with col_sg:
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
         
         # IMAGE ENHANCEMENT TOGGLE
