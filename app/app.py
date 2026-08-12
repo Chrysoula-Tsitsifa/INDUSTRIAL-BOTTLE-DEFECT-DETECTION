@@ -285,7 +285,11 @@ try:
                         
                         grads = tape.gradient(class_channel, last_conv_layer_output)
                         pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-                        heatmap = tf.reduce_sum(tf.multiply(pooled_grads, last_conv_layer_output), axis=-1)[0]
+                        
+                        # HEATMAP SYNTHESIS
+                        # Matrix multiplication and extraction as numpy array.
+                        heatmap_tensor = tf.reduce_sum(tf.multiply(pooled_grads, last_conv_layer_output), axis=-1)[0]
+                        heatmap = heatmap_tensor.numpy()
                         heatmap = np.maximum(heatmap, 0)
                         
                         if np.max(heatmap) != 0:
@@ -293,7 +297,7 @@ try:
                         else:
                             heatmap = heatmap * 0.0
                             
-                        heatmap_resized = cv2.resize(heatmap.numpy(), (224, 224))
+                        heatmap_resized = cv2.resize(heatmap, (224, 224))
                     else:
                         heatmap_resized = np.zeros((224, 224))
 
