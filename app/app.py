@@ -84,7 +84,7 @@ try:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # CONTROL PANEL
-    # Balanced symmetrical layout columns for options with precise line alignment.
+    # Balanced symmetrical layout columns for options with exact line alignment.
     col_cp, col_space, col_sg = st.columns([5.3, 0.2, 3.5])
     
     # ENGINE SELECTION
@@ -105,7 +105,7 @@ try:
     # STRUCTURAL INTEGRITY GATEKEEPER
     # Industrial safety mechanism for extreme anomaly blockage.
     with col_sg:
-        st.markdown("<div style='height: 28px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 58px;'></div>", unsafe_allow_html=True)
         use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
         
         # IMAGE ENHANCEMENT TOGGLE
