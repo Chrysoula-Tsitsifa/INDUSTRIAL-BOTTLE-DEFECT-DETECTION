@@ -204,7 +204,7 @@ try:
                     
                     # STRICT INDUSTRIAL THRESHOLD
                     # Evaluation limit for structural integrity.
-                    if score >= 0.80:
+                    if score >= 0.75:
                         st.markdown('<div style="background-color: green; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">✅ STATUS: NORMAL (PASSED)</div>', unsafe_allow_html=True)
                     else:
                         st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (FAILED)</div>', unsafe_allow_html=True)
