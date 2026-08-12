@@ -165,7 +165,7 @@ try:
                     else:
                         st.markdown('<div style="background-color: red; color: white; padding: 15px; border-radius: 5px; text-align: center; font-size: 20px; font-weight: bold;">❌ STATUS: DEFECTIVE (ANOMALY)</div>', unsafe_allow_html=True)
                 
-# MODEL EXECUTION BRANCH
+                # MODEL EXECUTION BRANCH
                 # Baseline autoencoder reconstruction analysis.
                 elif selected_model == "Baseline Autoencoder":
                     img_resized = cv2.resize(img_rgb, (128, 128))
@@ -221,12 +221,12 @@ try:
                 # MODEL EXECUTION BRANCH
                 # Mobilenet classification and explanation inference.
                 elif selected_model == "MobileNetV2 + Grad-CAM":
-		    
-		    # ROI CROPPING
-		    # Manual centering to force focus on the bottle orifice.
+                    
+                    # ROI CROPPING
+                    # Manual centering for the bottleneck orifice focus.
                     h, w = img_rgb.shape[:2]
                     center_y, center_x = h // 2, w // 2
-                    size = 200 # Προσαρμόζεις αυτό το νούμερο ανάλογα με το πόσο πρέπει να κόψεις
+                    size = 200 
                     img_resized = cv2.resize(img_rgb, (224, 224))
                     img_tensor = np.expand_dims(img_resized, axis=0).astype(np.float32) / 255.0
                     pred = mobilenet.predict(img_tensor)[0][0]
@@ -245,68 +245,74 @@ try:
                     st.metric("Confidence", f"{(pred * 100 if pred > 0.5 else (1 - pred) * 100):.2f}%")
                     st.markdown("<br>", unsafe_allow_html=True)
 
-# GRAD CAM LOCALIZATION (ROBUST VERSION)
-                # Visual anomaly regions via direct feature extractor and classifier mapping.
-                
-                # 1. Βρίσκουμε το τελευταίο conv layer δυναμικά
-                last_conv_layer = None
-                for layer in reversed(mobilenet.layers):
-                    if len(layer.output.shape) == 4:
-                        last_conv_layer = layer
-                        break
-                
-                if last_conv_layer is None:
-                    # Fallback αν δεν βρει 4D layer στο κεντρικό μοντέλο
-                    base_model = mobilenet.layers[0] if hasattr(mobilenet.layers[0], 'layers') else mobilenet
+                    # GRAD CAM LOCALIZATION
+                    # Visual anomaly regions via decoupled neural architecture.
+                    
+                    # BACKBONE SUB-SAMPLING
+                    # Extraction of the primary feature extractor for gradient flow.
+                    base_model = mobilenet.layers[0]
+                    
+                    last_conv_layer = None
                     for layer in reversed(base_model.layers):
                         if len(layer.output.shape) == 4:
                             last_conv_layer = layer
                             break
-
-                # 2. Φτιάχνουμε τα sub-models για το Grad-CAM
-                if last_conv_layer:
-                    # Feature extractor μέχρι το τελευταίο conv layer
-                    feature_extractor = tf.keras.models.Model(inputs=mobilenet.inputs, outputs=last_conv_layer.output)
                     
-                    with tf.GradientTape() as tape:
-                        inputs = tf.cast(img_tensor, tf.float32)
-                        conv_outputs = feature_extractor(inputs)
-                        tape.watch(conv_outputs)
+                    if last_conv_layer:
+                        conv_model = tf.keras.models.Model(inputs=base_model.inputs, outputs=last_conv_layer.output)
                         
-                        # Υπολογισμός προβλέψεων από τα επόμενα layers
-                        preds = mobilenet(inputs)
-                        # Ανάλογα αν είναι binary (1 κόμβος) ή categorical
-                        if preds.shape[-1] == 1:
-                            class_channel = preds[:, 0]
+                        # CLASSIFIER ISOLATION
+                        # Standalone diagnostic head for backpropagation mapping.
+                        classifier_input = tf.keras.Input(shape=conv_model.output.shape[1:])
+                        x = classifier_input
+                        for layer in mobilenet.layers[1:]:
+                            x = layer(x)
+                        classifier_model = tf.keras.models.Model(inputs=classifier_input, outputs=x)
+                        
+                        # GRADIENT CALCULATION
+                        # Saliency mapping via differentiable forward and backward passes.
+                        with tf.GradientTape() as tape:
+                            last_conv_layer_output = conv_model(img_tensor)
+                            tape.watch(last_conv_layer_output)
+                            
+                            preds = classifier_model(last_conv_layer_output)
+                            
+                            if preds.shape[-1] == 1:
+                                class_channel = preds[:, 0]
+                            else:
+                                class_idx = tf.argmax(preds[0])
+                                class_channel = preds[:, class_idx]
+                        
+                        grads = tape.gradient(class_channel, last_conv_layer_output)
+                        pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+                        heatmap = tf.reduce_sum(tf.multiply(pooled_grads, last_conv_layer_output), axis=-1)[0]
+                        heatmap = np.maximum(heatmap, 0)
+                        
+                        if np.max(heatmap) != 0:
+                            heatmap /= np.max(heatmap)
                         else:
-                            class_idx = tf.argmax(preds[0])
-                            class_channel = preds[:, class_idx]
-                    
-                    grads = tape.gradient(class_channel, conv_outputs)
-                    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-                    heatmap = tf.reduce_sum(tf.multiply(pooled_grads, conv_outputs), axis=-1)[0]
-                    heatmap = np.maximum(heatmap, 0)
-                    if np.max(heatmap) != 0:
-                        heatmap /= np.max(heatmap)
+                            heatmap = heatmap * 0.0
+                            
+                        heatmap_resized = cv2.resize(heatmap.numpy(), (224, 224))
                     else:
-                        heatmap = heatmap * 0.0
-                        
-                    heatmap_resized = cv2.resize(heatmap.numpy(), (224, 224))
-                else:
-                    heatmap_resized = np.zeros((224, 224))
+                        heatmap_resized = np.zeros((224, 224))
 
-                heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
-                heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
-                superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
-                
-                fig_cam, ax_cam = plt.subplots(figsize=(7, 5))
-                ax_cam.imshow(superimposed)
-                ax_cam.set_title("Grad-CAM Heatmap Overlay")
-                ax_cam.axis('off')
-                
-                col_cam_e1, col_cam_mid, col_cam_e2 = st.columns([1.5, 7, 1.5])
-                with col_cam_mid:
-                    st.pyplot(fig_cam)
+                    # VISUAL OVERLAY GENERATION
+                    # Coloration and fusion with the original input matrix.
+                    heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
+                    heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+                    superimposed = np.clip(heatmap_colored * 0.4 + img_resized, 0, 255).astype(np.uint8)
+                    
+                    # DIAGNOSTIC PLOT RENDERING
+                    # Matplotlib synthesis of the final heat overlay.
+                    fig_cam, ax_cam = plt.subplots(figsize=(7, 5))
+                    ax_cam.imshow(superimposed)
+                    ax_cam.set_title("Grad-CAM Heatmap Overlay")
+                    ax_cam.axis('off')
+                    
+                    col_cam_e1, col_cam_mid, col_cam_e2 = st.columns([1.5, 7, 1.5])
+                    with col_cam_mid:
+                        st.pyplot(fig_cam)
 
 except Exception as e:
     handle_external_error(e)
