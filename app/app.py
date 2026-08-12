@@ -87,15 +87,6 @@ try:
     # Balanced symmetrical layout columns for options with shifted checkboxes.
     col_cp, col_space, col_sg = st.columns([5.3, 0.2, 3.5])
     
-    # STRUCTURAL INTEGRITY GATEKEEPER
-    # Industrial safety mechanism for extreme anomaly blockage.
-    with col_sg:
-        use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
-        
-        # IMAGE ENHANCEMENT TOGGLE
-        # Option for visual presentation enhancement via contrast filter.
-        use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
-
     # ENGINE SELECTION
     # Model selection radio buttons.
     with col_cp:
@@ -108,6 +99,15 @@ try:
                 "MobileNetV2 + Grad-CAM"
             )
         )
+        
+    # STRUCTURAL INTEGRITY GATEKEEPER
+    # Industrial safety mechanism for extreme anomaly blockage.
+    with col_sg:
+        use_gatekeeper = st.checkbox("Enable Industrial Safety Gatekeeper (SSIM)", value=True)
+        
+        # IMAGE ENHANCEMENT TOGGLE
+        # Option for visual presentation enhancement via contrast filter.
+        use_clahe = st.checkbox("Enable Mild CLAHE Filter", value=True)
 
     # SPACING CONFIGURATION
     # Vertical gap implementation.
