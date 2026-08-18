@@ -1,0 +1,3 @@
+anomaly_score,model,roc_auc,reference,delta_vs_mse
+Reconstruction MSE,Frozen Tuned Conv AE,0.3365079365079365,Notebook 2,0.0
+1 - SSIM,Frozen Tuned Conv AE,0.40158730158730155,Notebook 3,0.06507936507936507

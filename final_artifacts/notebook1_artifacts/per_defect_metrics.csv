@@ -1,0 +1,7 @@
+model,defect_category,defect_samples,roc_auc_vs_good,detection_rate_at_threshold
+SVM+PCA,broken_large,20,0.5674999999999999,0.15
+SVM+PCA,broken_small,22,0.4681818181818182,0.045454545454545456
+SVM+PCA,contamination,21,0.6547619047619048,0.19047619047619047
+Simple AE,broken_large,20,0.46499999999999997,0.15
+Simple AE,broken_small,22,0.6113636363636363,0.36363636363636365
+Simple AE,contamination,21,0.5404761904761903,0.38095238095238093

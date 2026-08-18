@@ -1,0 +1,31 @@
+Metric,Value
+Calibration-Derived Threshold,0.6353660900885009
+Calibration Youden's J,1.0
+Calibration Defect Sensitivity,1.0
+Calibration Good Specificity,1.0
+Calibration Class Gap,0.3782203258220695
+Calibration Applied,1.0
+Platt Slope,1.398048504422398
+Platt Intercept,2.0423187282573343
+Calibration Brier Raw,0.04050269292161646
+Calibration Brier Final,0.008647015772881137
+Calibration ECE Raw,0.14454107480087638
+Calibration ECE Final,0.037479562226706425
+Accuracy,0.9318181818181818
+Defect Sensitivity,1.0
+Good Specificity,0.9142857142857143
+Defect Precision,0.75
+Defect F1-Score,0.8571428571428571
+MCC,0.8280786712108251
+Brier Score,0.02178358766602317
+AUC,1.0
+Leaked Defects,0.0
+Leaked Defect Rate,0.0
+False Alarms,3.0
+False Alarm Rate,0.08571428571428572
+Operational Review Band,0.1
+Uncertainty %,0.06818181818181818
+Wilson_Low,0.8177467866338279
+Wilson_High,0.9765410298271597
+BSS,0.866117378662156
+ECE,0.04664533508448253
