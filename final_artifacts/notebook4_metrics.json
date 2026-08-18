@@ -6,7 +6,9 @@
     "keras_model": "notebook4_artifacts/mobilenet_v2_final.keras",
     "tflite_model": "notebook4_artifacts/mobilenet_bottle_float16.tflite",
     "evaluation_metrics": "notebook4_artifacts/final_evaluation_metrics.csv",
-    "labels": "notebook4_artifacts/labels.txt"
+    "labels": "notebook4_artifacts/labels.txt",
+    "validation_comparison": "notebook4_artifacts/transfer_learning_validation_comparison.png",
+    "engineering_report": "notebook4_artifacts/engineering_report.txt"
   },
   "target_class": "bottle",
   "img_size": [
@@ -25,25 +27,25 @@
   "decision_contract": {
     "good_if": "P(Good) >= operational_threshold",
     "defective_if": "P(Good) < operational_threshold",
-    "operational_threshold": 0.6353660900885009,
+    "operational_threshold": 0.6378008697626796,
     "operational_review_band": 0.1,
     "threshold_source": "dedicated_calibration_split_only"
   },
   "probability_calibration": {
     "method": "platt_scaling",
     "applied": true,
-    "slope": 1.398048504422398,
-    "intercept": 2.0423187282573343,
-    "calibration_brier_raw": 0.04050269292161646,
-    "calibration_brier_final": 0.008647015772881137,
-    "calibration_ece_raw": 0.14454107480087638,
-    "calibration_ece_final": 0.037479562226706425
+    "slope": 1.397498726782255,
+    "intercept": 2.0635852089027753,
+    "calibration_brier_raw": 0.04165996211452703,
+    "calibration_brier_final": 0.008884720590682968,
+    "calibration_ece_raw": 0.1465891164689841,
+    "calibration_ece_final": 0.037910619701059876
   },
   "calibration_metrics": {
     "youden_j": 1.0,
     "defect_sensitivity": 1.0,
     "good_specificity": 1.0,
-    "class_gap": 0.3782203258220695
+    "class_gap": 0.3697677373926899
   },
   "locked_test_metrics": {
     "accuracy": 0.9318181818181818,
@@ -53,17 +55,24 @@
     "defect_precision": 0.75,
     "defect_f1": 0.8571428571428571,
     "mcc": 0.8280786712108251,
-    "brier_score": 0.02178358766602317,
-    "brier_skill_score": 0.866117378662156,
-    "ece": 0.04664533508448253,
+    "brier_score": 0.022083334906776466,
+    "brier_skill_score": 0.8642751226047007,
+    "ece": 0.04708207647825069,
     "false_alarms": 3,
     "false_alarm_rate": 0.08571428571428572,
     "leaked_defects": 0,
     "leaked_defect_rate": 0.0,
-    "uncertainty_fraction": 0.06818181818181818,
+    "uncertainty_fraction": 0.09090909090909091,
     "accuracy_wilson_interval": [
       0.8177467866338279,
       0.9765410298271597
     ]
+  },
+  "deployment_candidate_status": {
+    "selected_phase": "Phase 2 (Fine-Tuned)",
+    "tflite_quality_state": "Quality Hold",
+    "tflite_parity_max_abs_delta": 0.05096,
+    "tflite_operational_agreement": 0.9773,
+    "scope": "deployment_candidate_only; target-device benchmarking and independent operational validation remain required"
   }
 }

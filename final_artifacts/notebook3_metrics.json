@@ -73,7 +73,7 @@
     "roc_auc": 0.40158730158730155,
     "ssim_delta_vs_mse": 0.06507936507936507,
     "test_false_positive_rate": 0.15,
-    "threshold": 0.6950827538967133,
+    "threshold": 0.6951363980770111,
     "tn": 17,
     "tp": 18
   },
@@ -85,7 +85,7 @@
     "observed_calibration_flag_rate": 0.047619047619047616,
     "source": "reproduced_notebook2_normal_calibration_subset",
     "target_validation_false_positive_rate": 0.05,
-    "threshold": 0.6950827538967133
+    "threshold": 0.6951363980770111
   },
   "upstream_notebook2": {
     "conv_ae_mse_reference": 0.3365079365079365,

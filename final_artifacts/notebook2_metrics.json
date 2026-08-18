@@ -17,7 +17,7 @@
     "tuning_results": "notebook2_artifacts/tuning_results.csv"
   },
   "baseline_reference": {
-    "simple_ae": 0.5412698412698412,
+    "simple_ae": 0.5444444444444445,
     "source_metrics_filename": "baseline_metrics.json",
     "source_schema_version": "2.1",
     "svm_pca": 0.5619047619047619

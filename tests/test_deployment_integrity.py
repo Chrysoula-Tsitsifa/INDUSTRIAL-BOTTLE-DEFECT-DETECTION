@@ -21,7 +21,7 @@ class DeploymentIntegrityTests(unittest.TestCase):
         result = verify_artifact_integrity()
 
         self.assertEqual(result["status"], "verified")
-        self.assertEqual(result["verified_files"], 21)
+        self.assertEqual(result["verified_files"], 23)
         self.assertEqual(result["manifest_schema_version"], "1.0")
 
 

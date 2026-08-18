@@ -27,26 +27,26 @@
   },
   "models": {
     "simple_ae": {
-      "balanced_accuracy": 0.6007936507936508,
+      "balanced_accuracy": 0.5416666666666666,
       "batch_size": 32,
       "compression_ratio": 3.0,
       "epochs": 50,
-      "f1": 0.4523809523809524,
-      "fn": 44,
-      "fp": 2,
+      "f1": 0.47191011235955055,
+      "fn": 42,
+      "fp": 5,
       "latent_shape": [
         32,
         32,
         16
       ],
       "learning_rate": 0.001,
-      "precision": 0.9047619047619048,
-      "recall": 0.30158730158730157,
-      "roc_auc": 0.5412698412698412,
-      "test_false_positive_rate": 0.1,
-      "threshold": 0.0034025972709059715,
-      "tn": 18,
-      "tp": 19,
+      "precision": 0.8076923076923077,
+      "recall": 0.3333333333333333,
+      "roc_auc": 0.5444444444444445,
+      "test_false_positive_rate": 0.25,
+      "threshold": 0.003242213511839509,
+      "tn": 15,
+      "tp": 21,
       "validation_flag_rate": 0.047619047619047616
     },
     "svm_pca": {
@@ -72,7 +72,7 @@
   "schema_version": "2.1",
   "score_contract": "higher_score_means_more_anomalous",
   "seed": 42,
-  "simple_ae": 0.5412698412698412,
+  "simple_ae": 0.5444444444444445,
   "svm_pca": 0.5619047619047619,
   "target_class": "bottle",
   "threshold_policy": {
