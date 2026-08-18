@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from email.mime import image
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Final
+from app.core.validation import validate_image_for_inference
 
 import joblib
 import numpy as np
@@ -571,7 +573,9 @@ def run_inference(
         raise InferenceError(
             f"Unknown model key '{model_key}'. Valid options: {valid}"
         )
-
+    
+    validate_image_for_inference(image)
+    
     runtime = load_runtime_models()
 
     dispatch = {
