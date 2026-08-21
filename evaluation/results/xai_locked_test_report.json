@@ -1,0 +1,43 @@
+{
+  "protocol": "Locked-Test confirmatory XAI localization evaluation",
+  "dataset": "MVTec AD bottle",
+  "seed": 42,
+  "frozen_method": "gradcam",
+  "frozen_layer": "out_relu",
+  "heatmap_resolution": [
+    7,
+    7
+  ],
+  "test_defective_images": 9,
+  "defect_classes": [
+    "broken_large",
+    "broken_small",
+    "contamination"
+  ],
+  "selection_source": "xai_method_validation_selection.json",
+  "test_used_for_method_selection": false,
+  "test_used_for_layer_selection": false,
+  "post_test_tuning_permitted": false,
+  "metrics": {
+    "mean_pixel_ap": 0.40080068879342734,
+    "mean_pixel_roc_auc": 0.8933183524625318,
+    "mean_soft_iou": 0.17206290533501015,
+    "mean_energy_inside_mask": 0.1976539765795072,
+    "mean_energy_gain": 3.236694490654166,
+    "pointing_accuracy": 0.4444444444444444
+  },
+  "uncertainty": {
+    "pixel_ap": {
+      "mean": 0.40080068879342734,
+      "bootstrap_95_ci_lower": 0.2911148535279028,
+      "bootstrap_95_ci_upper": 0.5155517045268154
+    },
+    "soft_iou": {
+      "mean": 0.17206290533501015,
+      "bootstrap_95_ci_lower": 0.12414061974757439,
+      "bootstrap_95_ci_upper": 0.2255534438387378
+    },
+    "bootstrap_repetitions": 10000
+  },
+  "interpretation_constraint": "Grad-CAM is post-hoc diagnostic evidence and does not constitute pixel-accurate segmentation or causal proof."
+}

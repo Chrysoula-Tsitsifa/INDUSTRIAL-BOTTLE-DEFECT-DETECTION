@@ -31,7 +31,7 @@ def main() -> None:
 
     st.set_page_config(
         page_title="Industrial Bottle Defect Detection",
-        page_icon="🏭",
+        page_icon="🔬",
         layout="wide",
     )
 
@@ -74,8 +74,8 @@ def main() -> None:
                 st.image(
                     image,
                     caption=(
-                        f"Uploaded image — "
-                        f"{image.width} × {image.height}px"
+                        f"Uploaded image - "
+                        f"{image.width} x {image.height}px"
                     ),
                 )
 
@@ -125,14 +125,18 @@ def main() -> None:
         )
 
     if not run_requested:
-        render_deployment_scope()
+        if model_key == "mobilenet_v2":
+            render_deployment_scope()
         return
 
     if image is None:
         st.warning(
             "Upload a valid image before running inspection."
         )
-        render_deployment_scope()
+
+        if model_key == "mobilenet_v2":
+            render_deployment_scope()
+
         return
 
     st.markdown(
@@ -161,7 +165,10 @@ def main() -> None:
         st.error(
             f"Inference could not be completed: {exc}"
         )
-        render_deployment_scope()
+
+        if model_key == "mobilenet_v2":
+            render_deployment_scope()
+
         return
 
     if (
@@ -198,7 +205,7 @@ def main() -> None:
                 st.image(
                     xai_result.overlay,
                     caption=(
-                        "Grad-CAM overlay — "
+                        "Grad-CAM overlay - "
                         f"target={xai_result.target_label}"
                     ),
                 )
@@ -218,7 +225,8 @@ def main() -> None:
                 f"for this image: {exc}"
             )
 
-    render_deployment_scope()
+    if model_key == "mobilenet_v2":
+        render_deployment_scope()
 
 
 if __name__ == "__main__":
