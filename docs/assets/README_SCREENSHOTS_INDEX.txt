@@ -1,0 +1,2 @@
+defective_gradcam.jpg
+good_gradcam.jpg
