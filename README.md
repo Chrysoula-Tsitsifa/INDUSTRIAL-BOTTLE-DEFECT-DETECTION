@@ -7,12 +7,15 @@
 
 Production-oriented industrial computer-vision project for bottle defect detection. The repository covers the full R&D path from classical anomaly-detection baselines and autoencoders to a calibrated MobileNetV2 classifier, explainability, artifact integrity checks, automated tests, Streamlit deployment, and a reproducible Docker image.
 
+
 ## 🚀 Live Demo
 
 **Open the deployed application:**  
+
 👉 [Industrial Bottle Defect Detection — Streamlit](https://industrial-bottle-defect-detection-nhartvdccuurmpvggaquo9.streamlit.app/)
 
 The live app supports image upload, multi-model inference, calibrated decision reporting, and Grad-CAM visualization for the MobileNetV2 deployment candidate.
+
 
 ## 🔍 What the application demonstrates
 
@@ -22,6 +25,7 @@ The live app supports image upload, multi-model inference, calibrated decision r
 - **Notebook 4 — Deployment candidate:** MobileNetV2 transfer learning, probability calibration, operational thresholding, Grad-CAM explainability, latency analysis, and TFLite export.
 - **Validated deployment artifacts:** frozen models, metrics, contracts, SHA-256 integrity manifest, and deployment checks.
 - **Automated testing:** preprocessing, input validation, inference, XAI, and deployment-integrity tests.
+
 
 ## 🧠 Deployment Candidate
 
@@ -34,6 +38,7 @@ The Streamlit application defaults to the calibrated MobileNetV2 classifier. It 
 - optional Grad-CAM evidence
 
 The application is a **host-side deployment candidate**. The exported TFLite model is included for edge deployment work, while independent target-device benchmarking remains a separate validation step.
+
 
 ## 🐳 Docker
 
@@ -59,6 +64,7 @@ http://localhost:8501
 
 The image is built from the repository `Dockerfile` and published through GitHub Actions.
 
+
 ## 🛠️ Technology Stack
 
 - **Deep Learning / Edge AI:** TensorFlow, Keras, TFLite
@@ -68,6 +74,7 @@ The image is built from the repository `Dockerfile` and published through GitHub
 - **Application:** Streamlit
 - **Data / Evaluation:** NumPy, pandas, Matplotlib
 - **MLOps / Reproducibility:** Docker, GitHub Actions, GHCR, artifact manifests, automated tests
+
 
 ## 📂 Repository Structure
 
@@ -89,6 +96,7 @@ INDUSTRIAL-BOTTLE-DEFECT-DETECTION/
 └── README.md
 ```
 
+
 ## 📓 Research Pipeline
 
 ### Phase 1 — Baselines
@@ -102,6 +110,7 @@ SSIM is used to assess structural reconstruction quality and sensitivity to imag
 
 ### Phase 4 — Transfer Learning, Calibration, XAI & Edge Export
 MobileNetV2 transfer learning is followed by probability calibration, operational decision logic, error analysis, Grad-CAM explainability, latency profiling, and TFLite export.
+
 
 ## ✅ Reproducibility & Validation
 
