@@ -17,6 +17,7 @@ Production-oriented industrial computer-vision project for bottle defect detecti
 
 The live app supports image upload, multi-model inference, calibrated decision reporting, and Grad-CAM visualization for the MobileNetV2 deployment candidate.
 
+<br>
 
 ## 🔍 What the application demonstrates
 
@@ -27,6 +28,7 @@ The live app supports image upload, multi-model inference, calibrated decision r
 - **Validated deployment artifacts:** frozen models, metrics, contracts, SHA-256 integrity manifest, and deployment checks.
 - **Automated testing:** preprocessing, input validation, inference, XAI, and deployment-integrity tests.
 
+<br>
 
 ## 🧠 Deployment Candidate
 
@@ -40,6 +42,7 @@ The Streamlit application defaults to the calibrated MobileNetV2 classifier. It 
 
 The application is a **host-side deployment candidate**. The exported TFLite model is included for edge deployment work, while independent target-device benchmarking remains a separate validation step.
 
+<br>
 
 ## 🐳 Docker
 
@@ -65,6 +68,7 @@ http://localhost:8501
 
 The image is built from the repository `Dockerfile` and published through GitHub Actions.
 
+<br>
 
 ## 🛠️ Technology Stack
 
@@ -76,6 +80,7 @@ The image is built from the repository `Dockerfile` and published through GitHub
 - **Data / Evaluation:** NumPy, pandas, Matplotlib
 - **MLOps / Reproducibility:** Docker, GitHub Actions, GHCR, artifact manifests, automated tests
 
+<br>
 
 ## 📂 Repository Structure
 
@@ -97,6 +102,7 @@ INDUSTRIAL-BOTTLE-DEFECT-DETECTION/
 └── README.md
 ```
 
+<br>
 
 ## 📓 Research Pipeline
 
@@ -112,6 +118,7 @@ SSIM is used to assess structural reconstruction quality and sensitivity to imag
 ### Phase 4 — Transfer Learning, Calibration, XAI & Edge Export
 MobileNetV2 transfer learning is followed by probability calibration, operational decision logic, error analysis, Grad-CAM explainability, latency profiling, and TFLite export.
 
+<br>
 
 ## ✅ Reproducibility & Validation
 
