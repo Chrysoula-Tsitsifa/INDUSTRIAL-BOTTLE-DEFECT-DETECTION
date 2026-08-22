@@ -1,82 +1,119 @@
-# 🏭 Industrial Visual Anomaly Detection & Edge AI Pipeline
+# 🏭 Industrial Bottle Defect Detection
 
-[![Streamlit App](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=Streamlit&logoColor=white)](ΤΟ_ΔΙΚΟ_ΣΟΥ_LINK_ΕΔΩ)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
-[![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-green.svg)](https://opencv.org/)
+[![Live App](https://img.shields.io/badge/Live%20App-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://industrial-bottle-defect-detection-khhkftcp9dscvfgtljah37.streamlit.app/)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.21-orange.svg)](https://tensorflow.org/)
+[![Docker](https://img.shields.io/badge/Docker-GHCR-2496ED?style=flat&logo=docker&logoColor=white)](https://github.com/Chrysoula-Tsitsifa/INDUSTRIAL-BOTTLE-DEFECT-DETECTION/pkgs/container/industrial-bottle-defect-detection)
 
-An enterprise grade, end to end Machine Learning pipeline engineered for automated visual inspection and structural anomaly detection in manufacturing lines. This project demonstrates a complete MLOps lifecycle - From classical algorithmic benchmarking and deep latent space optimization, to Explainable AI (XAI) diagnostics, edge IoT quantization, and system telemetry.
+Production-oriented industrial computer-vision project for bottle defect detection. The repository covers the full R&D path from classical anomaly-detection baselines and autoencoders to a calibrated MobileNetV2 classifier, explainability, artifact integrity checks, automated tests, Streamlit deployment, and a reproducible Docker image.
 
-<br>
+## 🚀 Live Demo
 
-## 🚀 Live Interactive Deployment
-Test the production ready Streamlit application equipped with a global Out of Distribution (OOD) Safety Gatekeeper:  
-👉 **([Live Application](https://industrial-bottle-defect-detection-enviqqfkwautbkyrsyzrzk.streamlit.app/))** 
+**Open the deployed application:**  
+👉 [Industrial Bottle Defect Detection — Streamlit](https://industrial-bottle-defect-detection-khhkftcp9dscvfgtljah37.streamlit.app/)
 
-<br>
+The live app supports image upload, multi-model inference, calibrated decision reporting, and Grad-CAM visualization for the MobileNetV2 deployment candidate.
 
-## 🧠 Core Architecture & R&D Evolution (The 4 Phase Pipeline)
+## 🔍 What the application demonstrates
 
-The system was developed through a rigorous 4 phase research and engineering pipeline, ensuring mathematical justification for every architectural decision.
+- **Notebook 1 — Classical baseline:** PCA + One-Class SVM and a simple autoencoder.
+- **Notebook 2 — Tuned autoencoder:** controlled convolutional-autoencoder optimization and threshold selection.
+- **Notebook 3 — Structural analysis:** SSIM-based reconstruction diagnostics and sensitivity analysis.
+- **Notebook 4 — Deployment candidate:** MobileNetV2 transfer learning, probability calibration, operational thresholding, Grad-CAM explainability, latency analysis, and TFLite export.
+- **Validated deployment artifacts:** frozen models, metrics, contracts, SHA-256 integrity manifest, and deployment checks.
+- **Automated testing:** preprocessing, input validation, inference, XAI, and deployment-integrity tests.
 
-### Phase 1: Algorithmic Benchmarking & Baselines
-* **Classical ML Control Group:** Engineered an idempotent data ingestion pipeline and applied Principal Component Analysis (PCA) for dimensionality reduction, followed by a One Class SVM to establish a strict statistical baseline.
-* **Deep Learning Baseline:** Constructed a foundational Convolutional Autoencoder (CAE) for unsupervised anomaly detection.
-* **Defect Localization:** Translated Mean Squared Error (MSE) reconstruction loss into normalized spatial error heatmaps for interpretable visual detection.
+## 🧠 Deployment Candidate
 
-### Phase 2: Architectural Engineering & Regularization
-* **Deep Latent Space Optimization:** Designed a parameterized, modular Convolutional Autoencoder incorporating Batch Normalization to mitigate internal covariate shift and stabilize the training of complex structural anomalies.
-* **Automated Hyperparameter Tuning:** Engineered a robust Grid Search pipeline governed by dynamic learning rate scheduling (`ReduceLROnPlateau`) and Early Stopping.
-* **Class Separability Diagnostics:** Established production ready thresholding by analyzing bimodal error distributions, visually proving iterative performance gains (ROC AUC) against the Classical ML baselines.
+The Streamlit application defaults to the calibrated MobileNetV2 classifier. It reports:
 
-### Phase 3: Image Quality Assurance (IQC) & Data Integrity
-* **Structural Degradation Profiling:** Engineered an automated Image Quality Control (IQC) pipeline utilizing OpenCV and the Structural Similarity Index (SSIM).
-* **Sensitivity Analysis & Thresholding:** Executed comprehensive multi value stress tests simulating factory environments (Gaussian noise, luminance shifts) to mathematically quantify the exact "Breaking Point" of structural integrity before downstream Deep Learning tasks.
-* **Automated Reporting:** Developed a deterministic Pandas consolidation module to generate structured CSV sensitivity reports.
+- calibrated `P(Good)`
+- operational decision threshold
+- predicted class
+- raw neural probability before calibration
+- optional Grad-CAM evidence
 
-### Phase 4: Transfer Learning, XAI, Forensics & Edge Deployment
-* **Dataset Restructuring:** Implemented Stratified Splitting to transition the dataset from unsupervised to supervised formats.
-* **Generalization Stability:** Engineered a Two Phase Transfer Learning architecture using MobileNetV2. Conducted rigorous generalization gap analysis, proving that targeted fine tuning eliminated initial overfitting and yielded a highly stable model (improving Validation Loss from 0.1085 to 0.1073).
-* **Forensic Error Analysis (Wall of Shame):** Developed an automated Industrial Viability Report that categorizes misclassifications into distinct diagnostic Zones by mathematically correlating Model Confidence with SSIM.
-* **Explainable AI (XAI):** Integrated CLAHE enhanced Grad CAM with sub pixel centroid localization to detect and mitigate **Shortcut Learning** (the *Clever Hans Effect*), proving robustness against spurious environmental correlations (e.g., glare).
-* **Manifold Analytics & Latency:** Validated latent space separability using PCA initialized t SNE manifold mapping (Version 8) and Silhouette scoring. Conducted speed tests for latency profiling.
-* **Edge AI & Quantization:** Exported the finalized neural architecture into a highly compressed TensorFlow Lite (TFLite) binary optimized for IoT edge deployment.
-* **Telemetry Profiling:** Executed a comprehensive System Resource Audit to monitor footprint constraints.
+The application is a **host-side deployment candidate**. The exported TFLite model is included for edge deployment work, while independent target-device benchmarking remains a separate validation step.
 
-<br>
+## 🐳 Docker
 
-## 🔬 Advanced Statistical Diagnostics
-Beyond standard accuracy, this pipeline is evaluated using stringent industrial and statistical metrics:
-* **Wilson Confidence Interval**
-* **Brier Score (Calibration)**
-* **Expected Calibration Error (ECE)**
-* **Matthews Correlation Coefficient (MCC)**
+A public container image is automatically built and published to GitHub Container Registry.
 
-<br>
+Pull the image:
+
+```bash
+docker pull ghcr.io/chrysoula-tsitsifa/industrial-bottle-defect-detection:latest
+```
+
+Run it:
+
+```bash
+docker run --rm -p 8501:8501 ghcr.io/chrysoula-tsitsifa/industrial-bottle-defect-detection:latest
+```
+
+Then open:
+
+```text
+http://localhost:8501
+```
+
+The image is built from the repository `Dockerfile` and published through GitHub Actions.
 
 ## 🛠️ Technology Stack
-* **Deep Learning & Edge AI:** TensorFlow, Keras, TFLite
-* **Machine Learning:** Scikit Learn (PCA, One Class SVM, Grid Search)
-* **Computer Vision & Image Processing:** OpenCV, Scikit Image (SSIM)
-* **Web UI & MLOps:** Streamlit
-* **Data Engineering & Visualization:** Pandas, NumPy, Matplotlib, Seaborn
 
- <br>  
+- **Deep Learning / Edge AI:** TensorFlow, Keras, TFLite
+- **Machine Learning:** scikit-learn, PCA, One-Class SVM
+- **Computer Vision:** Pillow, scikit-image, SSIM
+- **Explainability:** Grad-CAM
+- **Application:** Streamlit
+- **Data / Evaluation:** NumPy, pandas, Matplotlib
+- **MLOps / Reproducibility:** Docker, GitHub Actions, GHCR, artifact manifests, automated tests
 
 ## 📂 Repository Structure
 
 ```text
-Industrial Bottle Defect Detection/
-│
-├── app/                                              # Production UI & API
-│   ├── app.py                                        # Streamlit Application
-│   ├── requirements.txt                              # Dependency Management
-│   └── *.keras / *.joblib / *.npy                    # Serialized Models & Golden References
-│
-├── notebooks/                                        # The 4 Phase R&D Pipeline
-│   ├── 01_baseline_and_benchmarking.ipynb
-│   ├── 02_deep_learning_optimization.ipynb
-│   ├── 03_data_augmentation_quality_control.ipynb
-│   └── 04_transfer_learning_xai_and_edge.ipynb
-│
-└── README.md                                         # Technical Documentation
+INDUSTRIAL-BOTTLE-DEFECT-DETECTION/
+├── app/
+│   ├── main.py                  # Streamlit entrypoint
+│   ├── core/                    # inference, preprocessing, validation, XAI
+│   └── ui/                      # UI components and styles
+├── demo images/                 # sample bottle images for quick testing
+├── evaluation/                  # locked XAI / localization evaluation scripts and results
+├── final_artifacts/             # frozen models, metrics, contracts, integrity manifest
+├── notebooks/                   # four-stage R&D pipeline
+├── tests/                       # deployment and inference test suite
+├── .github/workflows/           # automated Docker build and publish workflow
+├── Dockerfile
+├── .dockerignore
+├── requirements.txt
+└── README.md
+```
+
+## 📓 Research Pipeline
+
+### Phase 1 — Baselines
+Classical PCA + One-Class SVM and a simple convolutional autoencoder establish reference performance.
+
+### Phase 2 — Controlled Autoencoder Tuning
+A tuned convolutional autoencoder is evaluated under controlled optimization and threshold-selection procedures.
+
+### Phase 3 — Structural Similarity Analysis
+SSIM is used to assess structural reconstruction quality and sensitivity to image degradation.
+
+### Phase 4 — Transfer Learning, Calibration, XAI & Edge Export
+MobileNetV2 transfer learning is followed by probability calibration, operational decision logic, error analysis, Grad-CAM explainability, latency profiling, and TFLite export.
+
+## ✅ Reproducibility & Validation
+
+The deployment package includes:
+
+- canonical frozen artifacts
+- model/metric contracts
+- artifact inventory with SHA-256 verification
+- automated preprocessing and inference tests
+- dedicated XAI tests and locked evaluation reports
+- GitHub Actions Docker build and GHCR publication
+
+## 📄 License
+
+MIT License.
