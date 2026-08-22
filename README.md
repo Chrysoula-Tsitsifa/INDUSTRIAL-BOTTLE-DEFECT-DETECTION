@@ -131,6 +131,8 @@ The deployment package includes:
 - dedicated XAI tests and locked evaluation reports
 - GitHub Actions Docker build and GHCR publication
 
+<br>
+
 ## 📄 License
 
 MIT License.
