@@ -1,0 +1,2 @@
+method,layer,sample_count,mean_pixel_ap,std_pixel_ap,mean_pixel_roc_auc,mean_soft_iou,mean_energy_inside_mask,mean_energy_gain,pointing_accuracy
+gradcam,out_relu,9,0.40080068879342734,0.18326427940751297,0.8933183524625318,0.17206290533501015,0.1976539765795072,3.236694490654166,0.4444444444444444

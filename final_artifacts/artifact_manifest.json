@@ -1,0 +1,314 @@
+{
+  "schema_version": "1.0",
+  "manifest_role": "canonical_artifact_inventory_and_integrity_record",
+  "project": "Industrial Bottle Defect Detection",
+  "generated_date": "2026-08-18",
+  "canonical_set": {
+    "file_count_excluding_manifest": 23,
+    "root_contracts": [
+      "baseline_metrics.json",
+      "notebook2_metrics.json",
+      "notebook3_metrics.json",
+      "notebook4_metrics.json"
+    ],
+    "all_declared_contract_artifact_paths_resolve": true,
+    "provenance": "clean_sequential_rerun_notebook_1_to_notebook_4_on_2026_08_18"
+  },
+  "contract_provenance": {
+    "baseline_metrics.json": "exported_by_notebook_1_clean_rerun",
+    "notebook2_metrics.json": "exported_by_notebook_2_clean_rerun",
+    "notebook3_metrics.json": "exported_by_notebook_3_clean_rerun",
+    "notebook4_metrics.json": "post_run_deployment_contract_derived_only_from_notebook_4_final_artifacts_and_final_evaluation_metrics_csv"
+  },
+  "runtime_compatibility": {
+    "scikit_learn_artifact_version": "1.6.1",
+    "keras_artifact_version": "3.13.2",
+    "deployment_policy": "pin artifact-producing library versions unless compatibility is explicitly validated before changing them",
+    "keras_archive_metadata": {
+      "notebook1_artifacts/simple_ae_baseline.keras": {
+        "keras_version": "3.13.2",
+        "date_saved": "2026-08-18@15:04:47"
+      },
+      "notebook2_artifacts/tuned_conv_ae.keras": {
+        "keras_version": "3.13.2",
+        "date_saved": "2026-08-18@15:41:09"
+      },
+      "notebook4_artifacts/mobilenet_v2_final.keras": {
+        "keras_version": "3.13.2",
+        "date_saved": "2026-08-18@16:24:11"
+      }
+    }
+  },
+  "contract_artifact_resolution": {
+    "baseline_metrics.json": {
+      "pca_model": {
+        "path": "notebook1_artifacts/pca_baseline.joblib",
+        "exists": true
+      },
+      "per_defect_metrics": {
+        "path": "notebook1_artifacts/per_defect_metrics.csv",
+        "exists": true
+      },
+      "simple_ae_model": {
+        "path": "notebook1_artifacts/simple_ae_baseline.keras",
+        "exists": true
+      },
+      "svm_model": {
+        "path": "notebook1_artifacts/one_class_svm_baseline.joblib",
+        "exists": true
+      }
+    },
+    "notebook2_metrics.json": {
+      "per_defect_metrics": {
+        "path": "notebook2_artifacts/tuned_per_defect_metrics.csv",
+        "exists": true
+      },
+      "test_score_summary": {
+        "path": "notebook2_artifacts/test_score_summary.csv",
+        "exists": true
+      },
+      "tuned_model": {
+        "path": "notebook2_artifacts/tuned_conv_ae.keras",
+        "exists": true
+      },
+      "tuning_results": {
+        "path": "notebook2_artifacts/tuning_results.csv",
+        "exists": true
+      }
+    },
+    "notebook3_metrics.json": {
+      "metric_comparison": {
+        "path": "notebook3_artifacts/mse_vs_ssim_metrics.csv",
+        "exists": true
+      },
+      "operational_comparison": {
+        "path": "notebook3_artifacts/mse_vs_ssim_operational_metrics.csv",
+        "exists": true
+      },
+      "ssim_per_defect_metrics": {
+        "path": "notebook3_artifacts/ssim_per_defect_metrics.csv",
+        "exists": true
+      },
+      "ssim_sensitivity_results": {
+        "path": "notebook3_artifacts/ssim_sensitivity_results.csv",
+        "exists": true
+      },
+      "ssim_test_score_summary": {
+        "path": "notebook3_artifacts/ssim_test_score_summary.csv",
+        "exists": true
+      }
+    },
+    "notebook4_metrics.json": {
+      "keras_model": {
+        "path": "notebook4_artifacts/mobilenet_v2_final.keras",
+        "exists": true
+      },
+      "tflite_model": {
+        "path": "notebook4_artifacts/mobilenet_bottle_float16.tflite",
+        "exists": true
+      },
+      "evaluation_metrics": {
+        "path": "notebook4_artifacts/final_evaluation_metrics.csv",
+        "exists": true
+      },
+      "labels": {
+        "path": "notebook4_artifacts/labels.txt",
+        "exists": true
+      },
+      "validation_comparison": {
+        "path": "notebook4_artifacts/transfer_learning_validation_comparison.png",
+        "exists": true
+      },
+      "engineering_report": {
+        "path": "notebook4_artifacts/engineering_report.txt",
+        "exists": true
+      }
+    }
+  },
+  "files": [
+    {
+      "path": "baseline_metrics.json",
+      "notebook": "Notebook 1",
+      "role": "contract",
+      "format": "json",
+      "size_bytes": 2341,
+      "sha256": "aaa3fe11cb0ecdf15c6257d4f97aef29fdbcaf24fbe3d22996d393ef00329400"
+    },
+    {
+      "path": "notebook1_artifacts/one_class_svm_baseline.joblib",
+      "notebook": "Notebook 1",
+      "role": "model",
+      "format": "joblib",
+      "size_bytes": 61119,
+      "sha256": "54b1bbe58d36296c3f1b00c2e022ec9c85c509b76d9a5fef1a475976bd28ab6d"
+    },
+    {
+      "path": "notebook1_artifacts/pca_baseline.joblib",
+      "notebook": "Notebook 1",
+      "role": "model",
+      "format": "joblib",
+      "size_bytes": 24578471,
+      "sha256": "85cf4bbf7c4c5f561bf401a9adbe8c8ea1b90a5ae2aafd297edb2436ad1d9111"
+    },
+    {
+      "path": "notebook1_artifacts/per_defect_metrics.csv",
+      "notebook": "Notebook 1",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 437,
+      "sha256": "a137fe6eaaeecc6a2c956958ef527bead254bcd47dc532639b7f8049cc8d619e"
+    },
+    {
+      "path": "notebook1_artifacts/simple_ae_baseline.keras",
+      "notebook": "Notebook 1",
+      "role": "model",
+      "format": "keras",
+      "size_bytes": 209638,
+      "sha256": "b47fb7b61e1774ac8a5bd7e36d3e7d1411fedcc1a06a865c442ab7838478c3af"
+    },
+    {
+      "path": "notebook2_artifacts/test_score_summary.csv",
+      "notebook": "Notebook 2",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 306,
+      "sha256": "9eb0476b4cfa063f243295fe5701163df02d626135f1fffe11c1de0961b217b0"
+    },
+    {
+      "path": "notebook2_artifacts/tuned_conv_ae.keras",
+      "notebook": "Notebook 2",
+      "role": "model",
+      "format": "keras",
+      "size_bytes": 4122532,
+      "sha256": "4273bd4dc51b77b64e184dbeaf5606b3288f32240f6ad6249ba21a943cad8951"
+    },
+    {
+      "path": "notebook2_artifacts/tuned_per_defect_metrics.csv",
+      "notebook": "Notebook 2",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 216,
+      "sha256": "13c689c20d8dccca955c1fc4f829008d89d10290e4c4d9f6ef27b3c62baf207c"
+    },
+    {
+      "path": "notebook2_artifacts/tuning_results.csv",
+      "notebook": "Notebook 2",
+      "role": "tuning_record",
+      "format": "csv",
+      "size_bytes": 329,
+      "sha256": "e45eba43b7a8c9dec2ef473ed6c967dbf631ffb09c10df973ceaebd060a14399"
+    },
+    {
+      "path": "notebook2_metrics.json",
+      "notebook": "Notebook 2",
+      "role": "contract",
+      "format": "json",
+      "size_bytes": 2801,
+      "sha256": "1c942ee30bbe8fe6ce7ad0ddeb097d488a940241e8389549ef5df87ccfd17c03"
+    },
+    {
+      "path": "notebook3_artifacts/mse_vs_ssim_metrics.csv",
+      "notebook": "Notebook 3",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 206,
+      "sha256": "cc3366afc7c094d14778bd8ede48362bdba90bc27bd11dee045ff9e72b95bb2f"
+    },
+    {
+      "path": "notebook3_artifacts/mse_vs_ssim_operational_metrics.csv",
+      "notebook": "Notebook 3",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 469,
+      "sha256": "23ed385703a10b1cace3d21aed5cc00d14c7539fbbefb1e5331bf92f45276b4e"
+    },
+    {
+      "path": "notebook3_artifacts/ssim_per_defect_metrics.csv",
+      "notebook": "Notebook 3",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 207,
+      "sha256": "79e15cfd01ccc2b3fe7481f0954a8232fc9d7a819740c66b6f40b6100f4b1bd6"
+    },
+    {
+      "path": "notebook3_artifacts/ssim_sensitivity_results.csv",
+      "notebook": "Notebook 3",
+      "role": "diagnostic",
+      "format": "csv",
+      "size_bytes": 1618,
+      "sha256": "97c96937479d9e5b36eec9efd2b961a35f636ccf6a7be89a79ad5ae7901f8c17"
+    },
+    {
+      "path": "notebook3_artifacts/ssim_test_score_summary.csv",
+      "notebook": "Notebook 3",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 282,
+      "sha256": "e7f9e4a6bc37420f2a7243bcb3d8bf2c8bc6ba5ec6e42a61883434defcdd535b"
+    },
+    {
+      "path": "notebook3_metrics.json",
+      "notebook": "Notebook 3",
+      "role": "contract",
+      "format": "json",
+      "size_bytes": 2816,
+      "sha256": "8bacb6671c301cbdd8c54256f8d9c86d8bfa31bdad28cde24c4072f68914f362"
+    },
+    {
+      "path": "notebook4_artifacts/engineering_report.txt",
+      "notebook": "Notebook 4",
+      "role": "engineering_report",
+      "format": "txt",
+      "size_bytes": 1948,
+      "sha256": "44506f29e689af44fcc2e783308d034a8b9221b8dd8877ff9acb9dd28e21ab79"
+    },
+    {
+      "path": "notebook4_artifacts/final_evaluation_metrics.csv",
+      "notebook": "Notebook 4",
+      "role": "evaluation",
+      "format": "csv",
+      "size_bytes": 930,
+      "sha256": "00e23d4f354fdc5e5490145f4887ae8e00222c9e65b5b6e5f0c71a16736d9292"
+    },
+    {
+      "path": "notebook4_artifacts/labels.txt",
+      "notebook": "Notebook 4",
+      "role": "labels",
+      "format": "txt",
+      "size_bytes": 15,
+      "sha256": "2f3bf4f073e4f87bf7f0e9807adacb1c6aff1c43971cd57eb5ca438a0ef6c839"
+    },
+    {
+      "path": "notebook4_artifacts/mobilenet_bottle_float16.tflite",
+      "notebook": "Notebook 4",
+      "role": "edge_model",
+      "format": "tflite",
+      "size_bytes": 4791320,
+      "sha256": "783ae7dbd8fdaac4afceb2ad6dd2e528043958089a599821d6a1d6af69215b9d"
+    },
+    {
+      "path": "notebook4_artifacts/mobilenet_v2_final.keras",
+      "notebook": "Notebook 4",
+      "role": "model",
+      "format": "keras",
+      "size_bytes": 10270866,
+      "sha256": "d76632bde03f04437740536c209fd8de9872f60928789c0523f4fd8de1d3856a"
+    },
+    {
+      "path": "notebook4_artifacts/transfer_learning_validation_comparison.png",
+      "notebook": "Notebook 4",
+      "role": "validation_visualization",
+      "format": "png",
+      "size_bytes": 196659,
+      "sha256": "359714a4c8637592ff88e2ebc757896e7467d9f11da3f93e1d6212b251061d07"
+    },
+    {
+      "path": "notebook4_metrics.json",
+      "notebook": "Notebook 4",
+      "role": "deployment_contract",
+      "format": "json",
+      "size_bytes": 2737,
+      "sha256": "c7810755fcbeba364ced409f9c6a26bd016319e91bd3d79033fdba53d4bee7f2"
+    }
+  ]
+}

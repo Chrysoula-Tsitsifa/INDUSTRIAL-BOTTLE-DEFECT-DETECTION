@@ -1,0 +1,15 @@
+{
+  "protocol": "Notebook 4 Validation-only ground-truth-mask localization selection",
+  "seed": 42,
+  "validation_defective_images": 9,
+  "candidate_layers": [
+    "block_5_add",
+    "block_12_add",
+    "out_relu"
+  ],
+  "primary_selection_metric": "mean_pixel_ap",
+  "secondary_selection_metric": "mean_soft_iou",
+  "tertiary_selection_metric": "pointing_accuracy",
+  "selected_layer": "out_relu",
+  "locked_test_used_for_selection": false
+}

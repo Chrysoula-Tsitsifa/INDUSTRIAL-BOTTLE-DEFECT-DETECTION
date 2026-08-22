@@ -1,0 +1,33 @@
+
+========================================================================
+BLOCK 11 MANIFOLD ANALYSIS | Tue Aug 18 16:24:09 2026
+SOURCE: Validation split | Samples: 43 | Feature dim: 1280
+QUANTITATIVE SPACE: Standardized PCA (27 components, 95.2644% variance)
+SILHOUETTE: 0.402176 | LOO OVERLAP: 2.3256% | NORMALIZED CENTROID SEPARATION: 1.103637
+VISUALIZATION: t-SNE (PCA initialization) | FALLBACK: False | ERROR: None
+NOTE: t-SNE coordinates and plot-header geometry are visualization-only.
+========================================================================
+
+========================================================================
+BLOCK 11 ENGINEERING VIABILITY | Tue Aug 18 16:24:09 2026
+ARCHITECTURE: MobileNetV2 (Fine-Tuned) | Champion selection: Phase 2 (Fine-Tuned)
+LATENCY: mean=31.900330 ms | p95=34.347056 ms | jitter=1.340126 ms | equivalent_fps=31.347638
+SEPARABILITY: silhouette=0.402176 | loo_overlap=2.325581% | normalized_centroid_separation=1.103637
+CHAMPION VALIDATION LOSS: 0.15686683356761932 | SOURCE: champion_val_loss
+STATES: speed=SUCCESS | separability=WARNING | validation_loss=SUCCESS
+SCOPE: descriptive engineering evidence only; no autonomous deployment authorization.
+========================================================================
+
+
+3. TFLITE HOST-BENCHMARK METRICS
+    Selected Champion: Phase 2 (Fine-Tuned)
+    Keras Size:          9.80 MB
+    TFLite Size:         4.57 MB
+    Size Reduction:      53.4 %
+    TFLite Mean:        13.05 ms
+    TFLite P95/P99:     14.71 /  18.26 ms
+    Throughput:          76.7 FPS
+    Parity Max |Δ|:    0.050960
+    Operational Agreement: 97.73%
+    Scope: Host-side TFLite deployment-candidate evidence; target-device benchmarking and independent operational validation remain required.
+    Cross-notebook evidence: context-only matrix sourced from Notebook 2/3 contracts when attached; heterogeneous metrics are never merged into the Notebook-4 accuracy chart.

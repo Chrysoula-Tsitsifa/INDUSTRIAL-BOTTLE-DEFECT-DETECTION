@@ -1,0 +1,85 @@
+{
+  "artifact_path_policy": "paths_are_relative_to_the_directory_containing_baseline_metrics_json",
+  "artifacts": {
+    "pca_model": "notebook1_artifacts/pca_baseline.joblib",
+    "per_defect_metrics": "notebook1_artifacts/per_defect_metrics.csv",
+    "simple_ae_model": "notebook1_artifacts/simple_ae_baseline.keras",
+    "svm_model": "notebook1_artifacts/one_class_svm_baseline.joblib"
+  },
+  "dataset_summary": {
+    "test_anomaly": 63,
+    "test_defect_categories": {
+      "broken_large": 20,
+      "broken_small": 22,
+      "contamination": 21
+    },
+    "test_normal": 20,
+    "train_normal": 167,
+    "validation_normal": 42
+  },
+  "img_size": [
+    128,
+    128
+  ],
+  "label_contract": {
+    "anomaly": 1,
+    "good": 0
+  },
+  "models": {
+    "simple_ae": {
+      "balanced_accuracy": 0.5416666666666666,
+      "batch_size": 32,
+      "compression_ratio": 3.0,
+      "epochs": 50,
+      "f1": 0.47191011235955055,
+      "fn": 42,
+      "fp": 5,
+      "latent_shape": [
+        32,
+        32,
+        16
+      ],
+      "learning_rate": 0.001,
+      "precision": 0.8076923076923077,
+      "recall": 0.3333333333333333,
+      "roc_auc": 0.5444444444444445,
+      "test_false_positive_rate": 0.25,
+      "threshold": 0.003242213511839509,
+      "tn": 15,
+      "tp": 21,
+      "validation_flag_rate": 0.047619047619047616
+    },
+    "svm_pca": {
+      "balanced_accuracy": 0.5634920634920635,
+      "f1": 0.22535211267605634,
+      "fn": 55,
+      "fp": 0,
+      "ocsvm_gamma": "scale",
+      "ocsvm_nu": 0.05,
+      "pca_components": 124,
+      "pca_retained_variance": 0.9508098363876343,
+      "pca_variance_target": 0.95,
+      "precision": 1.0,
+      "recall": 0.12698412698412698,
+      "roc_auc": 0.5619047619047619,
+      "test_false_positive_rate": 0.0,
+      "threshold": 0.05939077974221163,
+      "tn": 20,
+      "tp": 8,
+      "validation_flag_rate": 0.047619047619047616
+    }
+  },
+  "schema_version": "2.1",
+  "score_contract": "higher_score_means_more_anomalous",
+  "seed": 42,
+  "simple_ae": 0.5444444444444445,
+  "svm_pca": 0.5619047619047619,
+  "target_class": "bottle",
+  "threshold_policy": {
+    "decision_rule": "score > threshold",
+    "empirical_quantile_method": "higher",
+    "source": "held_out_normal_validation_only",
+    "target_validation_false_positive_rate": 0.05,
+    "validation_samples": 42
+  }
+}

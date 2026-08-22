@@ -1,0 +1,4 @@
+defect_category,defect_samples,roc_auc_vs_good,detection_rate_at_threshold
+broken_large,20,0.2525,0.05
+broken_small,22,0.5204545454545455,0.045454545454545456
+contamination,21,0.2238095238095238,0.047619047619047616

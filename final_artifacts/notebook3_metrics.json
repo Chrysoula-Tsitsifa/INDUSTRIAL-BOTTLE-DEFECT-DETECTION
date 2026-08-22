@@ -1,0 +1,96 @@
+{
+  "artifact_path_policy": "paths_are_relative_to_the_directory_containing_notebook3_metrics_json",
+  "artifacts": {
+    "metric_comparison": "notebook3_artifacts/mse_vs_ssim_metrics.csv",
+    "operational_comparison": "notebook3_artifacts/mse_vs_ssim_operational_metrics.csv",
+    "ssim_per_defect_metrics": "notebook3_artifacts/ssim_per_defect_metrics.csv",
+    "ssim_sensitivity_results": "notebook3_artifacts/ssim_sensitivity_results.csv",
+    "ssim_test_score_summary": "notebook3_artifacts/ssim_test_score_summary.csv"
+  },
+  "dataset_summary": {
+    "calibration_normal": 21,
+    "outer_validation_normal": 42,
+    "test_anomaly": 63,
+    "test_defect_categories": {
+      "broken_large": 20,
+      "broken_small": 22,
+      "contamination": 21
+    },
+    "test_normal": 20,
+    "train_normal": 167,
+    "tuning_validation_normal": 21
+  },
+  "experiment_role": "ssim_structural_reconstruction_analysis",
+  "img_size": [
+    128,
+    128
+  ],
+  "label_contract": {
+    "anomaly": 1,
+    "good": 0
+  },
+  "schema_version": "1.0",
+  "score_contract": "higher_score_means_more_anomalous",
+  "score_direction_locked_before_test": true,
+  "seed": 42,
+  "sensitivity_control": {
+    "brightness_factors": [
+      1.0,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.3
+    ],
+    "noise_variances": [
+      0.001,
+      0.002,
+      0.005,
+      0.01,
+      0.02,
+      0.05,
+      0.1
+    ],
+    "role": "diagnostic_only",
+    "samples": 12,
+    "universal_ssim_safety_threshold_assumed": false
+  },
+  "ssim": 0.40158730158730155,
+  "ssim_anomaly_score_definition": "1_minus_ssim",
+  "ssim_similarity_contract": "higher_similarity_means_more_structurally_similar",
+  "structural_metrics": {
+    "balanced_accuracy": 0.5678571428571428,
+    "f1": 0.42857142857142855,
+    "fn": 45,
+    "fp": 3,
+    "mse_reference_roc_auc": 0.3365079365079365,
+    "posthoc_score_reversal_applied": false,
+    "precision": 0.8571428571428571,
+    "ranking_inversion_observed": true,
+    "recall": 0.2857142857142857,
+    "roc_auc": 0.40158730158730155,
+    "ssim_delta_vs_mse": 0.06507936507936507,
+    "test_false_positive_rate": 0.15,
+    "threshold": 0.6951363980770111,
+    "tn": 17,
+    "tp": 18
+  },
+  "target_class": "bottle",
+  "threshold_policy": {
+    "calibration_samples": 21,
+    "decision_rule": "score > threshold",
+    "empirical_quantile_method": "higher",
+    "observed_calibration_flag_rate": 0.047619047619047616,
+    "source": "reproduced_notebook2_normal_calibration_subset",
+    "target_validation_false_positive_rate": 0.05,
+    "threshold": 0.6951363980770111
+  },
+  "upstream_notebook2": {
+    "conv_ae_mse_reference": 0.3365079365079365,
+    "model_artifact_owned_by": "Notebook 2",
+    "source_metrics_filename": "notebook2_metrics.json",
+    "source_schema_version": "2.1"
+  }
+}

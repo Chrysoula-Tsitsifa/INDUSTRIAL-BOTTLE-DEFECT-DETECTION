@@ -1,0 +1,36 @@
+{
+  "protocol": "Notebook 4 Validation-only ground-truth-mask XAI method selection",
+  "seed": 42,
+  "validation_defective_images": 9,
+  "layer_selection_source": "xai_localization_validation_selection.json",
+  "locked_validation_selected_layer": "out_relu",
+  "candidate_methods": [
+    "gradcam",
+    "gradcam_pp"
+  ],
+  "primary_selection_metric": "mean_pixel_ap",
+  "secondary_selection_metric": "mean_soft_iou",
+  "tertiary_selection_metric": "pointing_accuracy",
+  "selected_method": "gradcam",
+  "selected_layer": "out_relu",
+  "pixel_ap_paired_bootstrap": {
+    "mean_delta_gradcam_pp_minus_gradcam": -0.09825761581311512,
+    "median_delta_gradcam_pp_minus_gradcam": -0.09685360975421176,
+    "bootstrap_95_ci_lower": -0.13538961686644757,
+    "bootstrap_95_ci_upper": -0.06316735472020901,
+    "gradcam_pp_sample_wins": 0,
+    "gradcam_sample_wins": 9,
+    "ties": 0
+  },
+  "soft_iou_paired_bootstrap": {
+    "mean_delta_gradcam_pp_minus_gradcam": -0.05791235142835602,
+    "median_delta_gradcam_pp_minus_gradcam": -0.056234016226169525,
+    "bootstrap_95_ci_lower": -0.07215486768614107,
+    "bootstrap_95_ci_upper": -0.04541634447089443,
+    "gradcam_pp_sample_wins": 0,
+    "gradcam_sample_wins": 9,
+    "ties": 0
+  },
+  "bootstrap_repetitions": 10000,
+  "locked_test_used_for_selection": false
+}
