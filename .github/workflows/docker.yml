@@ -3,7 +3,7 @@ name: Docker Build and Publish
 on:
   push:
     branches:
-      - production-rebuild
+      - main
   workflow_dispatch:
 
 permissions:
