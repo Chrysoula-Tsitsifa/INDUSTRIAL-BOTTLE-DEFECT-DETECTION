@@ -1,6 +1,6 @@
 # 🏭 Industrial Bottle Defect Detection
 
-[![Live App](https://img.shields.io/badge/Live%20App-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://industrial-bottle-defect-detection-khhkftcp9dscvfgtljah37.streamlit.app/)
+[![Live App](https://img.shields.io/badge/Live%20App-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://industrial-bottle-defect-detection-nhartvdccuurmpvggaquo9.streamlit.app/)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.21-orange.svg)](https://tensorflow.org/)
 [![Docker](https://img.shields.io/badge/Docker-GHCR-2496ED?style=flat&logo=docker&logoColor=white)](https://github.com/Chrysoula-Tsitsifa/INDUSTRIAL-BOTTLE-DEFECT-DETECTION/pkgs/container/industrial-bottle-defect-detection)
