@@ -10,7 +10,7 @@ Production-oriented industrial computer-vision project for bottle defect detecti
 ## 🚀 Live Demo
 
 **Open the deployed application:**  
-👉 [Industrial Bottle Defect Detection — Streamlit]((https://industrial-bottle-defect-detection-nhartvdccuurmpvggaquo9.streamlit.app/))
+👉 [Industrial Bottle Defect Detection — Streamlit][(https://industrial-bottle-defect-detection-nhartvdccuurmpvggaquo9.streamlit.app/)]
 
 The live app supports image upload, multi-model inference, calibrated decision reporting, and Grad-CAM visualization for the MobileNetV2 deployment candidate.
 
