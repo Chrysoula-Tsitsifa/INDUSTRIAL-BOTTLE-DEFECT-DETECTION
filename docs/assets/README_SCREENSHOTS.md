@@ -1,0 +1,1 @@
+Screenshots for the README are represented by the live application preview and will be maintained alongside the deployment documentation.
