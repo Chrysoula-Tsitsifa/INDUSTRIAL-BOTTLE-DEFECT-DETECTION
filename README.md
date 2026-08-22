@@ -8,6 +8,7 @@
 Production-oriented industrial computer-vision project for bottle defect detection. The repository covers the full R&D path from classical anomaly-detection baselines and autoencoders to a calibrated MobileNetV2 classifier, explainability, artifact integrity checks, automated tests, Streamlit deployment, and a reproducible Docker image.
 
 
+
 ## 🚀 Live Demo
 
 **Open the deployed application:**  
